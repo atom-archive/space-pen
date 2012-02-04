@@ -1,0 +1,43 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+  <title>Space Pen Spec Suite</title>
+
+  <link rel="shortcut icon" type="image/png" href="vendor/jasmine_favicon.png">
+
+  <!-- jasmine framework -->
+  <link rel="stylesheet" type="text/css" href="vendor/jasmine.css">
+  <script type="text/javascript" src="vendor/jasmine.js"></script>
+  <script type="text/javascript" src="vendor/jasmine-html.js"></script>
+  <script type="text/javascript" src="vendor/jquery-matchers.js"></script>
+
+  <!-- coffeescript -->
+  <script type="text/javascript" src="vendor/coffee-script.js"></script>
+
+  <!-- dependencies -->
+  <script type="text/javascript" src="vendor/jquery.js"></script>
+  <script type="text/javascript" src="vendor/underscore.js"></script>
+
+  <!-- implementation -->
+  <script type="text/coffeescript" src="space-pen.coffee"></script>
+
+  <!-- specs -->
+  <script type="text/coffeescript" src="space-pen-spec.coffee"></script>
+
+  <script type="text/coffeescript">
+    jasmineEnv = jasmine.getEnv()
+    jasmineEnv.updateInterval = 1000
+    trivialReporter = new jasmine.TrivialReporter()
+    jasmineEnv.addReporter(trivialReporter)
+
+    jasmineEnv.specFilter = (spec) ->
+      trivialReporter.specFilter(spec)
+
+    jasmineEnv.execute()
+  </script>
+</head>
+
+<body>
+  <div id="jasmine-content"></div>
+</body>
+</html>
