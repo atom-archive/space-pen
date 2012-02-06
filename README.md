@@ -1,5 +1,5 @@
 # SpacePen
-## Working with markup on the final frontier
+## Write markup on the final frontier
 
 SpacePen is a powerful but minimalist client-side view framework for CoffeeScript. It combines the "view" and "controller" into a single jQuery object, whose markup is expressed with an embedded DSL similar to Markaby for Ruby.
 
@@ -147,6 +147,17 @@ class Spacecraft extends View
       @subview 'launchController', new LaunchController(countdown: params.countdown)
       @h1 "Spacecraft"
       ...
+```
+
+## Freeform Markup Generation
+
+You don't need a View class to use the SpacePen markup DSL. Call `View.render` with an unbound function (`->`, not `=>`) that calls tag methods, and it will return a document fragment for ad-hoc use. This method is also assigned to the `$$` global variable for convenience.
+
+```coffeescript
+view.list.append $$ ->
+  @li =>
+    @text "Starship"
+    @em "Enterprise"
 ```
 
 ## jQuery extensions
