@@ -25,7 +25,7 @@ view = new Spacecraft
 view.find('ol').append('<li>Star Destroyer</li>')
 
 view.on 'click', 'li', ->
-  alert "They clicked on ##{$(this).text()}"
+  alert "They clicked on #{$(this).text()}"
 ```
 
 But SpacePen views are more powerful than normal jQuery fragments because they let you define custom methods:
@@ -35,7 +35,7 @@ class Spacecraft extends View
   @content: -> ...
 
   @addSpacecraft: (name) ->
-    @find('ol').append "<li>##{name}</li>"
+    @find('ol').append "<li>#{name}</li>"
 
 
 view = new Spacecraft
@@ -91,7 +91,7 @@ class Spacecraft extends View
         @li "Space Shuttle"
 
   addSpacecraft: (name) ->
-    @list.append("<li>##{name}</li>")
+    @list.append("<li>#{name}</li>")
 ```
 
 Elements can also have event name attributes whose value references a custom method. For example, if a `button` element has an attribute `click=launchSpacecraft`, then SpacePen will invoke the `launchSpacecraft` method on the button`s parent view when it is clicked:
@@ -105,7 +105,7 @@ class Spacecraft extends View
         @li click: 'launchSpacecraft', "Saturn V"
 
   launchSpacecraft: (event, element) ->
-    console.log "Preparing ##{element.name} for launch!"
+    console.log "Preparing #{element.name} for launch!"
 ```
 ## Markup DSL Details
 
