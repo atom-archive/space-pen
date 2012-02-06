@@ -1,6 +1,9 @@
+# SpacePen
+## Working with markup on the final frontier
+
 SpacePen is a powerful but minimalist client-side view framework for CoffeeScript. It combines the "view" and "controller" into a single jQuery object, whose markup is expressed with an embedded DSL similar to Markaby for Ruby.
 
-# Basics
+## Basics
 
 View objects extend from the View class and have a @content class method where you express their HTML contents with an embedded markup DSL:
 
@@ -22,7 +25,7 @@ view = new Spacecraft
 view.find('ol').append('<li>Star Destroyer</li>')
 
 view.on 'click', 'li', ->
-  alert "They clicked on #{$(this).text()}"
+  alert "They clicked on ##{$(this).text()}"
 ```
 
 But SpacePen views are more powerful than normal jQuery fragments because they let you define custom methods:
@@ -32,7 +35,7 @@ class Spacecraft extends View
   @content: -> ...
 
   @addSpacecraft: (name) ->
-    @find('ol').append "<li>#{name}</li>"
+    @find('ol').append "<li>##{name}</li>"
 
 
 view = new Spacecraft
@@ -73,7 +76,7 @@ class Spacecraft extends View
     @title = params.title
 ```
 
-# Outlets and Events
+## Outlets and Events
 
 SpacePen will automatically create named reference for any element with an `outlet` attribute. For example, if the `ol` element has an attribute `outlet=list`, the view object will have a `list` entry pointing to a jQuery wrapper for the `ol` element.
 
@@ -88,7 +91,7 @@ class Spacecraft extends View
         @li "Space Shuttle"
 
   addSpacecraft: (name) ->
-    @list.append("<li>#{name}</li>")
+    @list.append("<li>##{name}</li>")
 ```
 
 Elements can also have event name attributes whose value references a custom method. For example, if a `button` element has an attribute `click=launchSpacecraft`, then SpacePen will invoke the `launchSpacecraft` method on the button`s parent view when it is clicked:
@@ -102,11 +105,11 @@ class Spacecraft extends View
         @li click: 'launchSpacecraft', "Saturn V"
 
   launchSpacecraft: (event, element) ->
-    console.log "Preparing #{element.name} for launch!"
+    console.log "Preparing ##{element.name} for launch!"
 ```
-# Markup DSL Details
+## Markup DSL Details
 
-## Tag Methods (`@div`, `@h1`, etc.)
+### Tag Methods (`@div`, `@h1`, etc.)
 
 As you've seen so far, the markup DSL is pretty straightforward. From the `@content` class method or any method it calls, just invoke instance methods named for the HTML tags you want to generate. There are 3 types of arguments you can pass to a tag method:
 
@@ -125,7 +128,7 @@ If you need to emit a non-standard tag, you can use the `@tag(name, args...)` me
 @tag 'bubble', type: "speech", => ...
 ```
 
-## Text Methods
+### Text Methods
 
 * `@text(string)`
   Emits the HTML-escaped string as text wherever it is called.
@@ -133,7 +136,7 @@ If you need to emit a non-standard tag, you can use the `@tag(name, args...)` me
 * `@raw(string)`
   Passes the given string through unescaped. Use this when you need to emit markup directly that was generated beforehand.
 
-# Subviews
+## Subviews
 
 Subviews are a great way to make your view code more modular. The `@subview(name, view)` method takes a name and another view object. The view object will be inserted at the location of the call, and a reference with the given name will be wired to it from the parent view. A `parentView` reference will be created on the subview pointing at the parent.
 
@@ -146,9 +149,9 @@ class Spacecraft extends View
       ...
 ```
 
-# jQuery extensions
+## jQuery extensions
 
-## `$.fn.view`
+### `$.fn.view`
 You can retrieve the view object for any DOM element by calling `view()` on it. This usually shouldn't be necessary, as most DOM manipulation will take place within the view itself using outlet references, but is occasionally helpful.
 
 ```coffeescript
@@ -160,7 +163,7 @@ $('body').append(view)
 $('li').view() == view
 ```
 
-## 'attach' events
+### 'attach' events
 
 The `initialize` method is always called when the view is still a detached DOM fragment, before it is appended to the DOM. This is usually okay, but occasionally you'll have some initialization logic that depends on the view actually being on the DOM. For example, you may depend on applying a CSS rule before measuring an element's height.
 
@@ -175,16 +178,16 @@ class Spacecraft extends View
       console.log "My height is", @height()
 ```
 
-# Anticipated Concerns / Objections
+## Anticipated Concerns / Objections
 
-## What about the view/controller distinction?
+### What about the view/controller distinction?
 MVC was invented in a setting where graphics rendering was substantially more complex than it is in a web browser. In Cocoa development, for example, a view object's primary role is to implement `drawRect` and forward UI events to the controller. But in a browser, you don't need to handle your own rendering with `drawRect`. Instead, you express the view declaratively using markup and CSS, and the browser takes care of the rest. The closest thing to a MVC "view" in this world is a fragment of markup, but this contains very little logic. On the web, the view/controller distinction is like a vestigial organ: It's a solution to a problem we no longer have, and no longer justifies the conceptual overhead of using two objects where one would do.
 
-## Our designers can't handle writing markup in CoffeeScript
+### Our designers can't handle writing markup in CoffeeScript
 Okay. SpacePen might not be the right fit for you. But are you sure they can't handle it? What if you pair with them for a couple hours and teach them what to do? There's also the potential of plugging in another template language for content generation, while keeping the rest of the framework. But if developers are writing the majority of the markup, expressing it directly in CoffeeScript is a productivity win.
 
 
-# Hacking on SpacePen
+## Hacking on SpacePen
 
 To run specs, start a web server in the root of the repository:
 
