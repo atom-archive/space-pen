@@ -151,7 +151,7 @@ class Spacecraft extends View
 
 ## jQuery extensions
 
-### `$.fn.view`
+### $.fn.view
 You can retrieve the view object for any DOM element by calling `view()` on it. This usually shouldn't be necessary, as most DOM manipulation will take place within the view itself using outlet references, but is occasionally helpful.
 
 ```coffeescript
@@ -164,7 +164,6 @@ $('li').view() == view
 ```
 
 ### 'attach' events
-
 The `initialize` method is always called when the view is still a detached DOM fragment, before it is appended to the DOM. This is usually okay, but occasionally you'll have some initialization logic that depends on the view actually being on the DOM. For example, you may depend on applying a CSS rule before measuring an element's height.
 
 SpacePen extends jQuery manipulation methods like `append`, `replaceWith`, etc. to trigger `attach` events on your view objects. So a good way to handle initialization that depends on the DOM is in an `attach` event handler.
