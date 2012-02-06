@@ -34,7 +34,7 @@ But SpacePen views are more powerful than normal jQuery fragments because they l
 class Spacecraft extends View
   @content: -> ...
 
-  @addSpacecraft: (name) ->
+  addSpacecraft: (name) ->
     @find('ol').append "<li>#{name}</li>"
 
 
@@ -48,7 +48,7 @@ You can also pass a params hash on construction:
 class Spacecraft extends View
   @content: (params) ->
     @div =>
-      h1 params.title
+      @h1 params.title
       @ol =>
         @li name for name in params.spacecraft
 
@@ -61,7 +61,7 @@ Methods from the jQuery prototype can be gracefully overridden using `super`:
 class Spacecraft extends View
   @content: -> ...
 
-  @hide: ->
+  hide: ->
     console.log "Hiding Spacecraft List"
     super()
 ```
@@ -72,7 +72,7 @@ If you override the View class's constructor, ensure you call `super`. Alternati
 class Spacecraft extends View
   @content: -> ...
 
-  @initialize: (params) ->
+  initialize: (params) ->
     @title = params.title
 ```
 
@@ -173,7 +173,7 @@ SpacePen extends jQuery manipulation methods like `append`, `replaceWith`, etc. 
 class Spacecraft extends View
   @content: -> ...
 
-  @initialize: (params) ->
+  initialize: (params) ->
     @one 'attach', =>
       console.log "My height is", @height()
 ```
