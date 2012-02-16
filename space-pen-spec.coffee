@@ -45,6 +45,10 @@ describe "View", ->
         expect(view.li1).toMatchSelector "li.foo:contains(one)"
         expect(view.li2).toMatchSelector "li.bar:contains(two)"
 
+      it "removes the outlet attribute from markup", ->
+        expect(view.li1.attr('outlet')).toBeUndefined()
+        expect(view.li2.attr('outlet')).toBeUndefined()
+
       it "constructs and wires outlets for subviews", ->
         expect(view.subview).toExist()
         expect(view.subview.find('h2:contains(Subview)')).toExist()

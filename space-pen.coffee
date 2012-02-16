@@ -73,7 +73,9 @@ class View extends jQuery
   wireOutlets: (view) ->
     @find('[outlet]').each ->
       element = $(this)
-      view[element.attr('outlet')] = element
+      outlet = element.attr('outlet')
+      view[outlet] = element
+      element.attr('outlet', null)
 
   bindEventHandlers: (view) ->
     for eventName in events
