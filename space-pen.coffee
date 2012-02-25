@@ -160,15 +160,16 @@ jQuery.fn.view = -> this.data('view')
 
 # Trigger attach event when views are added to the DOM
 triggerAttachEvent = (element) ->
-  if element.attr?('triggerAttachEvents') and element.parents('html').length
+  if element?.attr?('triggerAttachEvents') and element.parents('html').length
     element.find('[triggerAttachEvents]').add(element).trigger('attach')
 
 for methodName in ['append', 'prepend', 'after', 'before']
   do (methodName) ->
     originalMethod = $.fn[methodName]
     jQuery.fn[methodName] = (args...) ->
-      result = originalMethod.apply(this, args)
-      triggerAttachEvent(args[0])
+      flatArgs = [].concat args...
+      result = originalMethod.apply(this, flatArgs)
+      triggerAttachEvent arg for arg in flatArgs
       result
 
 for methodName in ['prependTo', 'appendTo', 'insertAfter', 'insertBefore']
