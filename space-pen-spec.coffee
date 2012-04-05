@@ -91,20 +91,25 @@ describe "View", ->
         expect(view.subview.header.view()).toBe view.subview
 
     describe "when a view is inserted within another element with jquery", ->
-      [attachHandler, subviewAttachHandler] = []
+      [content, attachHandler, subviewAttachHandler] = []
 
       beforeEach ->
         attachHandler = jasmine.createSpy 'attachHandler'
         subviewAttachHandler = jasmine.createSpy 'subviewAttachHandler'
         view.on 'attach', attachHandler
         view.subview.on 'attach', subviewAttachHandler
+      
+      it "accepts undefined arguments as jQuery does", ->
+        view.append undefined
 
       describe "when attached to an element that is on the DOM", ->
+        beforeEach ->
+          content = $('#jasmine-content')
+
         afterEach ->
-          $('#jasmine-content').empty()
+          content.empty()
 
         it "triggers an 'attach' event on the view and its subviews", ->
-          content = $('#jasmine-content')
           content.append view
           expect(attachHandler).toHaveBeenCalled()
           expect(subviewAttachHandler).toHaveBeenCalled()
@@ -119,6 +124,27 @@ describe "View", ->
           view.insertBefore(otherElt)
           expect(attachHandler).toHaveBeenCalled()
           expect(subviewAttachHandler).toHaveBeenCalled()
+
+        describe "with multiple arguments", ->
+          [view2, view3, view2Handler, view3Handler] = []
+
+          beforeEach ->
+            view2Class = class extends View
+              @content: -> @div id: "view2"
+            view3Class = class extends View
+              @content: -> @div id: "view3"
+            view2 = new view2Class
+            view3 = new view3Class
+            view2Handler = jasmine.createSpy 'view2Handler'
+            view3Handler = jasmine.createSpy 'view3Handler'
+            view2.on 'attach', view2Handler
+            view3.on 'attach', view3Handler
+
+          it "triggers an 'attach' event on all args", ->
+            content.append view, [view2, view3]
+            expect(attachHandler).toHaveBeenCalled()
+            expect(view2Handler).toHaveBeenCalled()
+            expect(view3Handler).toHaveBeenCalled()
 
       describe "when attached to an element that is not on the DOM", ->
         it "does not trigger an attach event", ->
