@@ -94,6 +94,22 @@ describe "View", ->
         expect(view.subview.view()).toBe view.subview
         expect(view.subview.header.view()).toBe view.subview
 
+      it "defaults the first argument passed to @content and initialize to {}", ->
+        contentCalledWith = null
+        initializeCalledWith = null
+
+        TestView = class extends View
+          @content: (params) ->
+            contentCalledWith = params
+
+          initialize: (params) ->
+            initializeCalledWith = params
+
+        new TestView
+
+        expect(contentCalledWith).toEqual {}
+        expect(initializeCalledWith).toEqual {}
+
     describe "when a view is inserted within another element with jquery", ->
       [content, attachHandler, subviewAttachHandler] = []
 
