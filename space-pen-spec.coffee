@@ -98,7 +98,7 @@ describe "View", ->
         subviewAttachHandler = jasmine.createSpy 'subviewAttachHandler'
         view.on 'attach', attachHandler
         view.subview.on 'attach', subviewAttachHandler
-      
+
       it "accepts undefined arguments as jQuery does", ->
         view.append undefined
 
@@ -174,3 +174,17 @@ describe "View", ->
       expect(fragment.find('div#subview')).toExist()
       expect(fragment.foo).toMatchSelector('#subview')
 
+  describe "$$$", ->
+    it "returns the raw HTML constructed by tag methods called by the given function (not a jQuery wrapper)", ->
+      html = $$$ ->
+        @div class: "foo", =>
+          @ol =>
+            @li id: 'one'
+            @li id: 'two'
+
+      expect(typeof html).toBe 'string'
+      fragment = $(html)
+      expect(fragment).toMatchSelector('div.foo')
+      expect(fragment.find('ol')).toExist()
+      expect(fragment.find('ol li#one')).toExist()
+      expect(fragment.find('ol li#two')).toExist()

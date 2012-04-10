@@ -184,3 +184,4 @@ for methodName in ['prependTo', 'appendTo', 'insertAfter', 'insertBefore']
 
 (exports ? this).View = View
 (exports ? this).$$ = (fn) -> View.render.call(View, fn)
+(exports ? this).$$$ = (fn) -> View.buildHtml.call(View, fn)[0]
