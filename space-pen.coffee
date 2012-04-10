@@ -54,8 +54,8 @@ class View extends jQuery
     step(fragment) for step in postProcessingSteps
     fragment
 
-  constructor: (params={}) ->
-    [html, postProcessingSteps] = @constructor.buildHtml -> @content(params)
+  constructor: (args...) ->
+    [html, postProcessingSteps] = @constructor.buildHtml -> @content(args...)
     jQuery.fn.init.call(this, html)
     @constructor = jQuery # sadly, jQuery assumes this.constructor == jQuery in pushStack
     @wireOutlets(this)
@@ -63,7 +63,7 @@ class View extends jQuery
     @find('*').andSelf().data('view', this)
     @attr('triggerAttachEvents', true)
     step(this) for step in postProcessingSteps
-    @initialize?(params)
+    @initialize?(args...)
 
   buildHtml: (params) ->
     @constructor.builder = new Builder

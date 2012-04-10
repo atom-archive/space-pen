@@ -4,42 +4,45 @@ describe "View", ->
   describe "View objects", ->
     beforeEach ->
       Subview = class extends View
-        @content: (params) ->
+        @content: (params, otherArg) ->
           @div =>
-            @h2 { outlet: "header" }, params.title
+            @h2 { outlet: "header" }, params.title + " " + otherArg
             @div "I am a subview"
 
+        initialize: (args...) ->
+          @initializeCalledWith = args
+
       TestView = class extends View
-        @content: (attrs) ->
+        @content: (params, otherArg) ->
           @div keydown: 'viewClicked', class: 'rootDiv', =>
-            @h1 { outlet: 'header' }, attrs.title
+            @h1 { outlet: 'header' }, params.title + " " + otherArg
             @list()
-            @subview 'subview', new Subview(title: "Subview")
+            @subview 'subview', new Subview(title: "Subview", 43)
 
         @list: ->
           @ol =>
             @li outlet: 'li1', click: 'li1Clicked', class: 'foo', "one"
             @li outlet: 'li2', keypress:'li2Keypressed', class: 'bar', "two"
 
-        initialize: (params) ->
-          @initializeCalledWith = params
+        initialize: (args...) ->
+          @initializeCalledWith = args
 
         foo: "bar",
         li1Clicked: ->,
         li2Keypressed: ->
         viewClicked: ->
 
-      view = new TestView(title: "Zebra")
+      view = new TestView({title: "Zebra"}, 42)
 
     describe "constructor", ->
       it "calls the content class method with the given params to produce the view's html", ->
         expect(view).toMatchSelector "div"
-        expect(view.find("h1:contains(Zebra)")).toExist()
+        expect(view.find("h1:contains(Zebra 42)")).toExist()
         expect(view.find("ol > li.foo:contains(one)")).toExist()
         expect(view.find("ol > li.bar:contains(two)")).toExist()
 
       it "calls initialize on the view with the given params", ->
-        expect(view.initializeCalledWith).toEqual(title: "Zebra")
+        expect(view.initializeCalledWith).toEqual([{title: "Zebra"}, 42])
 
       it "wires outlet referenecs to elements with 'outlet' attributes", ->
         expect(view.li1).toMatchSelector "li.foo:contains(one)"
@@ -51,8 +54,9 @@ describe "View", ->
 
       it "constructs and wires outlets for subviews", ->
         expect(view.subview).toExist()
-        expect(view.subview.find('h2:contains(Subview)')).toExist()
+        expect(view.subview.find('h2:contains(Subview 43)')).toExist()
         expect(view.subview.parentView).toBe view
+        expect(view.subview.initializeCalledWith).toEqual([{title: "Subview"}, 43])
 
       it "does not overwrite outlets on the superview with outlets from the subviews", ->
         expect(view.header).toMatchSelector "h1"
