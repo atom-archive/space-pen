@@ -3,7 +3,7 @@ describe "View", ->
 
   describe "View objects", ->
     beforeEach ->
-      Subview = class extends View
+      class Subview extends View
         @content: (params, otherArg) ->
           @div =>
             @h2 { outlet: "header" }, params.title + " " + otherArg
@@ -12,7 +12,7 @@ describe "View", ->
         initialize: (args...) ->
           @initializeCalledWith = args
 
-      TestView = class extends View
+      class TestView extends View
         @content: (params, otherArg) ->
           @div keydown: 'viewClicked', class: 'rootDiv', =>
             @h1 { outlet: 'header' }, params.title + " " + otherArg
@@ -98,7 +98,7 @@ describe "View", ->
         contentCalledWith = null
         initializeCalledWith = null
 
-        TestView = class extends View
+        class TestView extends View
           @content: (params) ->
             contentCalledWith = params
             @div()
@@ -112,7 +112,7 @@ describe "View", ->
         expect(initializeCalledWith).toEqual {}
 
       it "throws an exception if the view has more than one root element", ->
-        BadView = class extends View
+        class BadView extends View
           @content: ->
             @div id: 'one'
             @div id: 'two'
