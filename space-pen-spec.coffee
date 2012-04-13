@@ -101,6 +101,7 @@ describe "View", ->
         TestView = class extends View
           @content: (params) ->
             contentCalledWith = params
+            @div()
 
           initialize: (params) ->
             initializeCalledWith = params
@@ -109,6 +110,20 @@ describe "View", ->
 
         expect(contentCalledWith).toEqual {}
         expect(initializeCalledWith).toEqual {}
+
+      it "throws an exception if the view has more than one root element", ->
+        BadView = class extends View
+          @content: ->
+            @div id: 'one'
+            @div id: 'two'
+
+        expect(-> new BadView).toThrow("View markup must have a single root element")
+
+      it "throws an exception if the view has no content", ->
+        BadView = class extends View
+          @content: -> # left blank intentionally
+
+        expect(-> new BadView).toThrow("View markup must have a single root element")
 
     describe "when a view is inserted within another element with jquery", ->
       [content, attachHandler, subviewAttachHandler] = []
