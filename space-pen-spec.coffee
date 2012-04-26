@@ -128,21 +128,18 @@ describe "View", ->
         expect(-> new BadView).toThrow("View markup must have a single root element")
 
     describe "when a view is attached to another element via jQuery", ->
-      [content, view2, view3, attachHandler, subviewAttachHandler, view2AttachHandler, view3AttachHandler] = []
+      [content, view2, view3, view4] = []
 
       beforeEach ->
         view2 = new TestView
         view3 = new TestView
+        view4 = new TestView
 
-        attachHandler = jasmine.createSpy 'attachHandler'
-        subviewAttachHandler = jasmine.createSpy 'subviewAttachHandler'
-        view2AttachHandler = jasmine.createSpy 'view2AttachHandler'
-        view3AttachHandler = jasmine.createSpy 'view3AttachHandler'
-
-        view.on 'attach', attachHandler
-        view.subview.on 'attach', subviewAttachHandler
-        view2.on 'attach', view2AttachHandler
-        view3.on 'attach', view3AttachHandler
+        view.afterAttach = jasmine.createSpy 'view.afterAttach'
+        view.subview.afterAttach = jasmine.createSpy('view.subview.afterAttach')
+        view2.afterAttach = jasmine.createSpy('view2.afterAttach')
+        view3.afterAttach = jasmine.createSpy('view3.afterAttach')
+        expect(view4.afterAttach).toBeUndefined()
 
       describe "when attached to an element that is on the DOM", ->
         beforeEach ->
@@ -151,29 +148,42 @@ describe "View", ->
         afterEach ->
           content.empty()
 
-        it "triggers an 'attach' event on all appended views and their subviews", ->
-          content.append view, [view2, view3]
-          expect(attachHandler).toHaveBeenCalled()
-          expect(subviewAttachHandler).toHaveBeenCalled()
-          expect(view2AttachHandler).toHaveBeenCalled()
-          expect(view3AttachHandler).toHaveBeenCalled()
+        describe "when $.fn.append is called with a single argument", ->
+          it "calls afterAttach (if it is present) on the appended view and its subviews, passing true to indicate they are on the DOM", ->
+            content.append view
+            expect(view.afterAttach).toHaveBeenCalledWith(true)
+            expect(view.subview.afterAttach).toHaveBeenCalledWith(true)
 
-          view.detach()
-          content.empty()
-          attachHandler.reset()
-          subviewAttachHandler.reset()
+        describe "when $.fn.append is called with multiple arguments", ->
+          it "calls afterAttach (if it is present) on all appended views and their subviews, passing true to indicate they are on the DOM", ->
+            content.append view, view2, [view3, view4]
+            expect(view.afterAttach).toHaveBeenCalledWith(true)
+            expect(view.subview.afterAttach).toHaveBeenCalledWith(true)
+            expect(view2.afterAttach).toHaveBeenCalledWith(true)
+            expect(view3.afterAttach).toHaveBeenCalledWith(true)
 
-          otherElt = $('<div>')
-          content.append(otherElt)
-          view.insertBefore(otherElt)
-          expect(attachHandler).toHaveBeenCalled()
-          expect(subviewAttachHandler).toHaveBeenCalled()
+        describe "when $.fn.insertBefore is called on the view", ->
+          it "calls afterAttach on the view and its subviews", ->
+            otherElt = $('<div>')
+            content.append(otherElt)
+            view.insertBefore(otherElt)
+            expect(view.afterAttach).toHaveBeenCalledWith(true)
+            expect(view.subview.afterAttach).toHaveBeenCalledWith(true)
+
+        describe "when a view is attached as part of a larger dom fragment", ->
+          it "calls afterAttach on the view and its subviews", ->
+            otherElt = $('<div>')
+            otherElt.append(view)
+            content.append(otherElt)
+            expect(view.afterAttach).toHaveBeenCalledWith(true)
+            expect(view.subview.afterAttach).toHaveBeenCalledWith(true)
 
       describe "when attached to an element that is not on the DOM", ->
-        it "does not trigger an attach event", ->
+        it "calls afterAttach (if it is present) on the appended view and its subviews, passing false to indicate they aren't on the DOM", ->
           fragment = $('<div>')
           fragment.append view
-          expect(attachHandler).not.toHaveBeenCalled()
+          expect(view.afterAttach).toHaveBeenCalledWith(false)
+          expect(view.subview.afterAttach).toHaveBeenCalledWith(false)
 
       it "allows $.fn.append to be called with undefined without raising an exception", ->
         view.append undefined

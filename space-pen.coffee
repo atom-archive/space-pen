@@ -63,7 +63,7 @@ class View extends jQuery
     @wireOutlets(this)
     @bindEventHandlers(this)
     @find('*').andSelf().data('view', this)
-    @attr('triggerAttachEvents', true)
+    @attr('callAttachHooks', true)
     step(this) for step in postProcessingSteps
     @initialize?(args...)
 
@@ -163,9 +163,14 @@ class Builder
 jQuery.fn.view = -> this.data('view')
 
 # Trigger attach event when views are added to the DOM
-triggerAttachEvent = (element) ->
-  if element?.attr?('triggerAttachEvents') and element.parents('html').length
-    element.find('[triggerAttachEvents]').add(element).trigger('attach')
+callAttachHook = (element) ->
+  return unless element
+  elements = element.find?('[callAttachHooks]').toArray() ? []
+  elements.push(element[0]) if element.attr?('callAttachHooks')
+  for element in elements
+    return unless view = $(element).view()
+    onDom = view.parents('html').length > 0
+    view.afterAttach?(onDom)
 
 for methodName in ['append', 'prepend', 'after', 'before']
   do (methodName) ->
@@ -173,7 +178,7 @@ for methodName in ['append', 'prepend', 'after', 'before']
     jQuery.fn[methodName] = (args...) ->
       flatArgs = [].concat args...
       result = originalMethod.apply(this, flatArgs)
-      triggerAttachEvent arg for arg in flatArgs
+      callAttachHook arg for arg in flatArgs
       result
 
 for methodName in ['prependTo', 'appendTo', 'insertAfter', 'insertBefore']
@@ -181,7 +186,7 @@ for methodName in ['prependTo', 'appendTo', 'insertAfter', 'insertBefore']
     originalMethod = $.fn[methodName]
     jQuery.fn[methodName] = (args...) ->
       result = originalMethod.apply(this, args)
-      triggerAttachEvent(this)
+      callAttachHook(this)
       result
 
 (exports ? this).View = View
