@@ -167,13 +167,13 @@ callAttachHook = (element) ->
   return unless element
   onDom = element.parents?('html').length > 0
 
-  elements = []
-  elements.push(element[0]) if element.attr?('callAttachHooks')
-  if onDom
-    childViews = element.find?('[callAttachHooks]').toArray() ? []
-    elements.push(childViews...)
+  elementsWithHooks = []
+  elementsWithHooks.push(element[0]) if element.attr?('callAttachHooks')
+  elementsWithHooks = elementsWithHooks.concat(element.find?('[callAttachHooks]').toArray() ? []) if onDom
 
-  for element in elements
+  parent = element
+  for element in elementsWithHooks
+    view = $(element).view()
     $(element).view()?.afterAttach?(onDom)
 
 for methodName in ['append', 'prepend', 'after', 'before']
