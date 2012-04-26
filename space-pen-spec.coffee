@@ -179,11 +179,19 @@ describe "View", ->
             expect(view.subview.afterAttach).toHaveBeenCalledWith(true)
 
       describe "when attached to an element that is not on the DOM", ->
-        it "calls afterAttach (if it is present) on the appended view and its subviews, passing false to indicate they aren't on the DOM", ->
+        it "calls afterAttach (if it is present) on the appended view, passing false to indicate it isn't on the DOM", ->
           fragment = $('<div>')
           fragment.append view
           expect(view.afterAttach).toHaveBeenCalledWith(false)
-          expect(view.subview.afterAttach).toHaveBeenCalledWith(false)
+
+        it "doesn't call afterAttach a second time until the view is attached to the DOM", ->
+          fragment = $('<div>')
+          fragment.append view
+          view.afterAttach.reset()
+
+          otherFragment = $('<div>')
+          otherFragment.append(fragment)
+          expect(view.afterAttach).not.toHaveBeenCalled()
 
       it "allows $.fn.append to be called with undefined without raising an exception", ->
         view.append undefined

@@ -165,12 +165,16 @@ jQuery.fn.view = -> this.data('view')
 # Trigger attach event when views are added to the DOM
 callAttachHook = (element) ->
   return unless element
-  elements = element.find?('[callAttachHooks]').toArray() ? []
+  onDom = element.parents?('html').length > 0
+
+  elements = []
   elements.push(element[0]) if element.attr?('callAttachHooks')
+  if onDom
+    childViews = element.find?('[callAttachHooks]').toArray() ? []
+    elements.push(childViews...)
+
   for element in elements
-    return unless view = $(element).view()
-    onDom = view.parents('html').length > 0
-    view.afterAttach?(onDom)
+    $(element).view()?.afterAttach?(onDom)
 
 for methodName in ['append', 'prepend', 'after', 'before']
   do (methodName) ->
