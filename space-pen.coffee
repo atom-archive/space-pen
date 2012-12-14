@@ -187,11 +187,16 @@ for methodName in ['append', 'prepend', 'after', 'before']
 
 for methodName in ['prependTo', 'appendTo', 'insertAfter', 'insertBefore']
   do (methodName) ->
-    originalMethod = $.fn[methodName]
+    originalMethod = jQuery.fn[methodName]
     jQuery.fn[methodName] = (args...) ->
       result = originalMethod.apply(this, args)
       callAttachHook(this)
       result
+
+originalCleanData = jQuery.cleanData
+jQuery.cleanData = (elements) ->
+  $(element).view()?.afterRemove?() for element in elements
+  originalCleanData(elements)
 
 (exports ? this).View = View
 (exports ? this).$$ = (fn) -> View.render.call(View, fn)

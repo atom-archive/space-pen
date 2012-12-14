@@ -196,6 +196,17 @@ describe "View", ->
       it "allows $.fn.append to be called with undefined without raising an exception", ->
         view.append undefined
 
+    describe "when a view is removed from the DOM", ->
+      it "calls the `afterRemove` hook", ->
+        content = $('#jasmine-content')
+        parent = $$ -> @div()
+        parent.append(view)
+        content.append(parent)
+
+        view.afterRemove = jasmine.createSpy 'afterRemove'
+        parent.remove()
+        expect(view.afterRemove).toHaveBeenCalled()
+
   describe "View.render (bound to $$)", ->
     it "renders a document fragment based on tag methods called by the given function", ->
       fragment = $$ ->
