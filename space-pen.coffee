@@ -195,7 +195,9 @@ for methodName in ['prependTo', 'appendTo', 'insertAfter', 'insertBefore']
 
 originalCleanData = jQuery.cleanData
 jQuery.cleanData = (elements) ->
-  $(element).view()?.afterRemove?() for element in elements
+  for element in elements
+    view = $(element).view()
+    view.afterRemove?() if view?[0] == element
   originalCleanData(elements)
 
 (exports ? this).View = View

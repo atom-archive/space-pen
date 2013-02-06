@@ -197,7 +197,7 @@ describe "View", ->
         view.append undefined
 
     describe "when a view is removed from the DOM", ->
-      it "calls the `afterRemove` hook", ->
+      it "calls the `afterRemove` hook once for each view", ->
         content = $('#jasmine-content')
         parent = $$ -> @div()
         parent.append(view)
@@ -206,6 +206,7 @@ describe "View", ->
         view.afterRemove = jasmine.createSpy 'afterRemove'
         parent.remove()
         expect(view.afterRemove).toHaveBeenCalled()
+        expect(view.afterRemove.callCount).toBe 1
 
   describe "View.render (bound to $$)", ->
     it "renders a document fragment based on tag methods called by the given function", ->
