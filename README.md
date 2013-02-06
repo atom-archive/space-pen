@@ -48,7 +48,8 @@ view = new Spacecraft
 view.addSpacecraft "Enterprise"
 ```
 
-You can also pass a params hash on construction:
+You can also pass arguments on construction, which get passed to both the
+`@content` method and the view's constructor.
 
 ```coffeescript
 class Spacecraft extends View
@@ -74,7 +75,7 @@ class Spacecraft extends View
 
 If you override the View class's constructor, ensure you call `super`.
 Alternatively, you can define an `initialize` method, which the constructor will
-call for you automatically with params.
+call for you automatically with the constructor's arguments.
 
 ```coffeescript
 class Spacecraft extends View

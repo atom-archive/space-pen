@@ -6,7 +6,7 @@ describe "View", ->
 
     beforeEach ->
       class Subview extends View
-        @content: (params, otherArg) ->
+        @content: (params={}, otherArg) ->
           @div =>
             @h2 { outlet: "header" }, params.title + " " + otherArg
             @div "I am a subview"
@@ -15,7 +15,7 @@ describe "View", ->
           @initializeCalledWith = args
 
       class TestView extends View
-        @content: (params, otherArg) ->
+        @content: (params={}, otherArg) ->
           @div keydown: 'viewClicked', class: 'rootDiv', =>
             @h1 { outlet: 'header' }, params.title + " " + otherArg
             @list()
@@ -95,23 +95,6 @@ describe "View", ->
         expect(view.header.view()).toBe view
         expect(view.subview.view()).toBe view.subview
         expect(view.subview.header.view()).toBe view.subview
-
-      it "defaults the first argument passed to @content and initialize to {}", ->
-        contentCalledWith = null
-        initializeCalledWith = null
-
-        class TestView extends View
-          @content: (params) ->
-            contentCalledWith = params
-            @div()
-
-          initialize: (params) ->
-            initializeCalledWith = params
-
-        new TestView
-
-        expect(contentCalledWith).toEqual {}
-        expect(initializeCalledWith).toEqual {}
 
       it "throws an exception if the view has more than one root element", ->
         class BadView extends View
