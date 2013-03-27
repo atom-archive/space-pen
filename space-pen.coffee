@@ -1,3 +1,8 @@
+if typeof require is 'function'
+  $ = jQuery = require('jquery')
+else
+  $ = jQuery = window.jQuery
+
 elements =
   'a abbr address article aside audio b bdi bdo blockquote body button
    canvas caption cite code colgroup datalist dd del details dfn div dl dt em
