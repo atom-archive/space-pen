@@ -180,16 +180,16 @@ describe "View", ->
         view.append undefined
 
     describe "when a view is removed from the DOM", ->
-      it "calls the `afterRemove` hook once for each view", ->
+      it "calls the `beforeRemove` hook once for each view", ->
         content = $('#jasmine-content')
         parent = $$ -> @div()
         parent.append(view)
         content.append(parent)
 
-        view.afterRemove = jasmine.createSpy 'afterRemove'
+        view.beforeRemove = jasmine.createSpy 'beforeRemove'
         parent.remove()
-        expect(view.afterRemove).toHaveBeenCalled()
-        expect(view.afterRemove.callCount).toBe 1
+        expect(view.beforeRemove).toHaveBeenCalled()
+        expect(view.beforeRemove.callCount).toBe 1
 
     describe "when the view constructs a new jQuery wrapper", ->
       it "constructs instances of jQuery rather than the view class", ->

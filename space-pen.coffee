@@ -212,7 +212,7 @@ originalCleanData = jQuery.cleanData
 jQuery.cleanData = (elements) ->
   for element in elements
     view = $(element).view()
-    view.afterRemove?() if view and view?[0] == element
+    view.beforeRemove?() if view and view?[0] == element
   originalCleanData(elements)
 
 (exports ? this).View = View
