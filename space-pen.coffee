@@ -57,7 +57,6 @@ class View extends jQuery
   constructor: (args...) ->
     [html, postProcessingSteps] = @constructor.buildHtml -> @content(args...)
     jQuery.fn.init.call(this, html)
-    @constructor = jQuery # sadly, jQuery assumes this.constructor == jQuery in pushStack
     throw new Error("View markup must have a single root element") if this.length != 1
     @wireOutlets(this)
     @bindEventHandlers(this)
@@ -88,6 +87,18 @@ class View extends jQuery
         element = $(this)
         methodName = element.attr(eventName)
         element.on eventName, (event) -> view[methodName](event, element)
+
+  # `pushStack` and `end` are jQuery methods that construct new wrappers.
+  # we override them here to construct plain wrappers with `jQuery` rather
+  # than wrappers that are instances of our view class.
+  pushStack: (elems) ->
+    ret = jQuery.merge(jQuery(), elems)
+    ret.prevObject = this
+    ret.context = @context
+    ret
+
+  end: ->
+    @prevObject ? jQuery(null)
 
 class Builder
   constructor: ->

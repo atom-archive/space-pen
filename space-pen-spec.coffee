@@ -191,6 +191,13 @@ describe "View", ->
         expect(view.afterRemove).toHaveBeenCalled()
         expect(view.afterRemove.callCount).toBe 1
 
+    describe "when the view constructs a new jQuery wrapper", ->
+      it "constructs instances of jQuery rather than the view class", ->
+        expect(view.eq(0) instanceof jQuery).toBeTruthy()
+        expect(view.eq(0) instanceof TestView).toBeFalsy()
+        expect(view.end() instanceof jQuery).toBeTruthy()
+        expect(view.end() instanceof TestView).toBeFalsy()
+
   describe "View.render (bound to $$)", ->
     it "renders a document fragment based on tag methods called by the given function", ->
       fragment = $$ ->
