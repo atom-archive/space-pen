@@ -1,5 +1,19 @@
 {
   "name": "space-pen",
   "version": "1.0.0",
-  "main": "space-pen"
+  "description": "Write markup on the final frontier",
+  "main": "./space-pen",
+  "licenses": [
+    {
+      "type": "MIT",
+      "url": "http://github.com/nathansobo/space-pen/raw/master/LICENSE"
+    }
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/nathansobo/space-pen.git"
+  },
+  "bugs": {
+    "url": "https://github.com/nathansobo/space-pen/issues"
+  }
 }
