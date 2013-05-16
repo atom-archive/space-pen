@@ -1,0 +1,6 @@
+.npmignore
+vendor
+example.*
+*.html
+*-spec.coffee
+npm-debug.log
