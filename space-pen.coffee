@@ -35,6 +35,8 @@ class View extends jQuery
 
   @text: (string) -> @currentBuilder.text(string)
 
+  @tag: (tagName, args...) -> @currentBuilder.tag(tagName, args...)
+
   @raw: (string) -> @currentBuilder.raw(string)
 
   @pushBuilder: ->

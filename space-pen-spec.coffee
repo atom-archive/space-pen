@@ -10,6 +10,7 @@ describe "View", ->
           @div =>
             @h2 { outlet: "header" }, params.title + " " + otherArg
             @div "I am a subview"
+            @tag 'mytag', id: 'thetag', 'Non standard tag'
 
         initialize: (args...) ->
           @initializeCalledWith = args
@@ -40,6 +41,7 @@ describe "View", ->
       it "calls the content class method with the given params to produce the view's html", ->
         expect(view).toMatchSelector "div"
         expect(view.find("h1:contains(Zebra 42)")).toExist()
+        expect(view.find("mytag#thetag:contains(Non standard tag)")).toExist()
         expect(view.find("ol > li.foo:contains(one)")).toExist()
         expect(view.find("ol > li.bar:contains(two)")).toExist()
 
