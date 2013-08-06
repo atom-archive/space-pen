@@ -4,3 +4,4 @@ example.*
 *.html
 *-spec.coffee
 npm-debug.log
+benchmark/
