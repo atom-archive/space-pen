@@ -33,7 +33,7 @@ class ViewMap
       @get = (element) -> views.get(element) if element?
     else
       @set = (element, view) -> $(element).data('view', view)
-      @delete = (element) -> # data cleared automatically from cleanData
+      @delete = (element) -> # data cleared automatically from $.cleanData
       @get = (element) -> $(element).data('view')
 
 views = new ViewMap()
