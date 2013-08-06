@@ -12,6 +12,11 @@
 
   <script type="text/coffeescript">
     $ ->
+      if WeakMap?.constructor?
+        $("#status").text("Removing 10,000 divs with WeakMap view cache")
+      else
+        $("#status").text("Removing 10,000 divs without WeakMap view cache")
+
       container = $("#remove")
       for i in [1...10000]
         container.append("<div>will remove</div>")
@@ -25,7 +30,7 @@
 
 <body>
 
-<div>Removing 10,000 divs</div>
+<div id="status"></div>
 <div id="results"></div>
 
 <div id="remove"></div>
