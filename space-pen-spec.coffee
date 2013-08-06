@@ -191,6 +191,16 @@ describe "View", ->
         expect(view.beforeRemove).toHaveBeenCalled()
         expect(view.beforeRemove.callCount).toBe 1
 
+      it "the view instance is no longer accessible by calling view()", ->
+        content = $('#jasmine-content')
+        parent = $$ -> @div()
+        parent.append(view)
+        content.append(parent)
+
+        expect($(view[0]).view()).toBe view
+        parent.remove()
+        expect($(view[0]).view()).toBeFalsy()
+
     describe "when the view constructs a new jQuery wrapper", ->
       it "constructs instances of jQuery rather than the view class", ->
         expect(view.eq(0) instanceof jQuery).toBeTruthy()

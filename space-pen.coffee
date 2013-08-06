@@ -24,6 +24,20 @@ events =
 
 idCounter = 0
 
+class ViewMap
+  constructor: ->
+    if WeakMap?.constructor?
+      views = new WeakMap()
+      @set = (element, view) -> views.set(element, view)
+      @delete = (element) -> views.delete(element) if element?
+      @get = (element) -> views.get(element) if element?
+    else
+      @set = (element, view) -> $(element).data('view', view)
+      @delete = (element) -> # data cleared automatically from cleanData
+      @get = (element) -> $(element).data('view')
+
+views = new ViewMap()
+
 class View extends jQuery
   @builderStack: []
 
@@ -65,7 +79,7 @@ class View extends jQuery
     throw new Error("View markup must have a single root element") if this.length != 1
     @wireOutlets(this)
     @bindEventHandlers(this)
-    @find('*').andSelf().data('view', this)
+    @find('*').andSelf().each (index, element) => views.set(element, this)
     @attr('callAttachHooks', true)
     step(this) for step in postProcessingSteps
     @initialize?(args...)
@@ -175,7 +189,7 @@ class Builder
         options.attributes = arg
     options
 
-jQuery.fn.view = -> this.data('view')
+jQuery.fn.view = -> views.get(this[0])
 jQuery.fn.views = -> @toArray().map (elt) -> $(elt).view()
 
 # Trigger attach event when views are added to the DOM
@@ -211,6 +225,7 @@ jQuery.cleanData = (elements) ->
   for element in elements
     view = $(element).view()
     view.beforeRemove?() if view and view?[0] == element
+    views.delete(element)
   originalCleanData(elements)
 
 (exports ? this).View = View
