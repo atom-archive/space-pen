@@ -225,8 +225,8 @@ jQuery.cleanData = (elements) ->
   for element in elements
     view = $(element).view()
     view.beforeRemove?() if view and view?[0] == element
-    views.delete(element)
   originalCleanData(elements)
+  views.delete(element) for element in elements
 
 (exports ? this).View = View
 (exports ? this).$$ = (fn) -> View.render.call(View, fn)

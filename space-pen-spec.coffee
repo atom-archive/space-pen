@@ -187,9 +187,14 @@ describe "View", ->
         content.append(parent)
 
         view.beforeRemove = jasmine.createSpy 'beforeRemove'
+        subviewParentViewDuringRemove = null
+        view.subview.beforeRemove = ->
+          subviewParentViewDuringRemove = view.subview.parent().view()
+
         parent.remove()
         expect(view.beforeRemove).toHaveBeenCalled()
         expect(view.beforeRemove.callCount).toBe 1
+        expect(subviewParentViewDuringRemove).toBe view
 
       it "the view instance is no longer accessible by calling view()", ->
         content = $('#jasmine-content')
