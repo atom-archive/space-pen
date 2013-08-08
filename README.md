@@ -228,8 +228,8 @@ class Spacecraft extends View
       console.log "I just attached to", @parent()
 ```
 
-### After Remove Hooks
-SpacePen calls the `afterRemove` hook whenever a view is removed from the DOM
+### Before Remove Hooks
+SpacePen calls the `beforeRemove` hook whenever a view is removed from the DOM
 via a jQuery method. This works if the view is removed directly with `remove` or
 indirectly when a method like `empty` or `html` is called on a parent element.
 This is a good place to clean up subscriptions and other view-specific state.
@@ -241,7 +241,7 @@ class Spacecraft extends View
   initialize: ->
     $(window).on 'resize.spacecraft', -> ...
 
-  afterRemove: ->
+  beforeRemove: ->
     $(window).off('.spacecraft')
 ```
 
