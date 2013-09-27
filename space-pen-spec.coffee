@@ -60,6 +60,7 @@ describe "View", ->
         expect(view.subview).toExist()
         expect(view.subview.find('h2:contains(Subview 43)')).toExist()
         expect(view.subview.parentView).toBe view
+        expect(view.subview.constructor.currentBuilder).toBeFalsy()
         expect(view.subview.initializeCalledWith).toEqual([{title: "Subview"}, 43])
 
       it "does not overwrite outlets on the superview with outlets from the subviews", ->

@@ -25,7 +25,7 @@ events =
 idCounter = 0
 
 class View extends jQuery
-  @builderStack: []
+  @builderStack: null
 
   elements.forEach (tagName) ->
     View[tagName] = (args...) -> @currentBuilder.tag(tagName, args...)
@@ -41,6 +41,7 @@ class View extends jQuery
 
   @pushBuilder: ->
     builder = new Builder
+    @builderStack ?= []
     @builderStack.push(builder)
     @currentBuilder = builder
 
