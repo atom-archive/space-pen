@@ -4,6 +4,8 @@ module.exports = (grunt) ->
 
     coffee:
       compile:
+        options:
+          sourceMap: true
         files:
           'space-pen.js': 'space-pen.coffee'
 
