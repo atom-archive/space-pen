@@ -10,13 +10,16 @@ isPassed = ->
   page.evaluate ->
     document.querySelector('.jasmine_reporter .runner.passed')?
 
+getDescription = ->
+  page.evaluate ->
+    document.querySelector('.runner .description').innerText
+
 waitUntilDone = ->
   if isDone()
+    console.log getDescription()
     if isPassed()
-      console.log 'Specs passed'
       phantom.exit()
     else
-      console.log 'Specs failed'
       phantom.exit(1)
   else
     if new Date().getTime() - startTime > 60 * 1000
