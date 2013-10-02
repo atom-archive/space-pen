@@ -1,4 +1,5 @@
-# SpacePen
+# SpacePen [![Build Status](https://travis-ci.org/nathansobo/space-pen.png)](https://travis-ci.org/nathansobo/space-pen)
+
 ## Write markup on the final frontier
 
 SpacePen is a powerful but minimalist client-side view framework for
