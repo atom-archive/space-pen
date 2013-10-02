@@ -15,5 +15,9 @@
   },
   "bugs": {
     "url": "https://github.com/nathansobo/space-pen/issues"
+  },
+  "devDependencies": {
+    "express": "~3.4.0",
+    "coffee-script": "~1.6.3"
   }
 }
