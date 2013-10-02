@@ -1,0 +1,9 @@
+language: node_js
+
+notifications:
+  email: false
+
+node_js:
+  - 0.10
+
+script: node_modules/.bin/coffee headless-spec-runner.coffee
