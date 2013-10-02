@@ -2,6 +2,7 @@
 vendor
 example.*
 *.html
-*-spec.coffee
+*.coffee
+.travis.yml
 npm-debug.log
 benchmark/
