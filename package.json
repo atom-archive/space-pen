@@ -6,7 +6,7 @@
   "scripts": {
     "prepublish": "node_modules/.bin/grunt clean lint coffee",
     "test": "node_modules/.bin/grunt test",
-    "start": "node_modules/.bin/grunt connect"
+    "start": "node_modules/.bin/grunt start"
   },
   "licenses": [
     {
