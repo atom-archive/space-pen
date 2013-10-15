@@ -2,7 +2,7 @@
   "name": "space-pen",
   "version": "1.3.0",
   "description": "Write markup on the final frontier",
-  "main": "./space-pen.js",
+  "main": "./lib/space-pen.js",
   "scripts": {
     "prepublish": "node_modules/.bin/grunt clean lint coffee",
     "test": "node_modules/.bin/grunt test",
