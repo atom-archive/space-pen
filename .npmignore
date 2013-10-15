@@ -7,6 +7,8 @@ vendor/jasmine.js
 vendor/jasmine_favicon.png
 vendor/jquery-matchers.js
 examples/
+src/
+spec/
 *.html
 *.coffee
 *.map

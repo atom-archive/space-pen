@@ -3,11 +3,12 @@ module.exports = (grunt) ->
     pkg: grunt.file.readJSON('package.json')
 
     coffee:
-      compile:
-        options:
-          sourceMap: true
-        files:
-          'space-pen.js': 'space-pen.coffee'
+      glob_to_multiple:
+        expand: true
+        cwd: 'src'
+        src: ['*.coffee']
+        dest: 'lib'
+        ext: '.js'
 
     coffeelint:
       options:
@@ -16,8 +17,8 @@ module.exports = (grunt) ->
         max_line_length:
           level: 'ignore'
 
-      src: ['space-pen.coffee']
-      test: ['space-pen-spec.coffee']
+      src: ['src/*.coffee']
+      test: ['spec/*.coffee']
 
   grunt.loadNpmTasks('grunt-contrib-coffee')
   grunt.loadNpmTasks('grunt-coffeelint')
