@@ -82,8 +82,11 @@ $.fn.preempt = (eventName, handler) ->
     if handler(e, args...) == false then e.stopImmediatePropagation()
 
   eventNameWithoutNamespace = eventName.split('.')[0]
-  handlers = $._data(this[0], 'events')[eventNameWithoutNamespace] ? []
+  handlers = @handlers()[eventNameWithoutNamespace] ? []
   handlers.unshift(handlers.pop())
+
+$.fn.handlers = ->
+  $._data(this[0], 'events')
 
 $.fn.hasParent = ->
   @parent()[0]?
@@ -109,7 +112,7 @@ $.fn.events = ->
   documentation = @data('documentation') ? {}
   events = {}
 
-  for eventName of $._data(this[0], 'events') ? {}
+  for eventName of @handlers() ? {}
     events[eventName] = documentation[eventName] ? null
 
   if @hasParent()
