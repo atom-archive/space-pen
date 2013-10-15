@@ -48,9 +48,11 @@ module.exports = (grunt) ->
   grunt.loadNpmTasks('grunt-contrib-connect')
 
   grunt.registerTask 'clean', ->
-    rm = require('rimraf').sync
+    rm = (pathToDelete) ->
+      grunt.file.delete(pathToDelete) if grunt.file.exists(pathToDelete)
     rm('lib')
     rm('spec/spec-helper.js')
+
   grunt.registerTask('lint', ['coffeelint'])
   grunt.registerTask('test', ['default', 'shell:browserify', 'shell:test'])
   grunt.registerTask('default', ['coffee', 'lint'])

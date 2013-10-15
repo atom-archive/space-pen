@@ -28,7 +28,6 @@
     "grunt-cli": "~0.1.8",
     "grunt": "~0.4.1",
     "grunt-coffeelint": "0.0.6",
-    "rimraf": "~2.1.4",
     "browserify": "~2.34.1",
     "jasmine-focused": "~0.15.0",
     "grunt-shell": "~0.5.0",
