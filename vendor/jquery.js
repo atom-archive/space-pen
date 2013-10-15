@@ -8818,12 +8818,11 @@ if ( typeof module === "object" && module && typeof module.exports === "object" 
 	if ( typeof define === "function" && define.amd ) {
 		define( "jquery", [], function () { return jQuery; } );
 	}
-}
-
-// If there is a window object, that at least has a document property,
-// define jQuery and $ identifiers
-if ( typeof window === "object" && typeof window.document === "object" ) {
-	window.jQuery = window.$ = jQuery;
+  // If there is a window object, that at least has a document property,
+  // define jQuery and $ identifiers
+  else if ( typeof window === "object" && typeof window.document === "object" ) {
+    window.jQuery = window.$ = jQuery;
+  }
 }
 
 })( window );
