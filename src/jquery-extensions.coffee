@@ -142,4 +142,7 @@ $.Event.prototype.abortKeyBinding = ->
 $.Event.prototype.currentTargetView = -> $(this.currentTarget).view()
 $.Event.prototype.targetView = -> $(this.target).view()
 
-(exports ? this).$ = $
+if module?
+  module.exports = $
+else
+  this.$ = $
