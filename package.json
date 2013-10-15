@@ -4,8 +4,9 @@
   "description": "Write markup on the final frontier",
   "main": "./space-pen.js",
   "scripts": {
-    "prepublish": "grunt clean lint coffee",
-    "test": "grunt test"
+    "prepublish": "node_modules/.bin/grunt clean lint coffee",
+    "test": "node_modules/.bin/grunt test",
+    "start": "node_modules/.bin/grunt connect"
   },
   "licenses": [
     {
@@ -31,7 +32,8 @@
     "browserify": "~2.34.1",
     "jasmine-focused": "~0.15.0",
     "grunt-shell": "~0.5.0",
-    "coffeeify": "~0.5.1"
+    "coffeeify": "~0.5.1",
+    "grunt-contrib-connect": "~0.5.0"
   },
   "dependencies": {
     "underscore-plus": "~0.2.0"

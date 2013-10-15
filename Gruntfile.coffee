@@ -35,9 +35,16 @@ module.exports = (grunt) ->
           stderr: true
           failOnError: true
 
+    connect:
+      server:
+        options:
+          port: 1337
+          keepalive: true
+
   grunt.loadNpmTasks('grunt-contrib-coffee')
   grunt.loadNpmTasks('grunt-shell')
   grunt.loadNpmTasks('grunt-coffeelint')
+  grunt.loadNpmTasks('grunt-contrib-connect')
 
   grunt.registerTask 'clean', -> require('rimraf').sync('space-pen.js')
   grunt.registerTask('lint', ['coffeelint:src', 'coffeelint:test'])
