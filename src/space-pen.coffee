@@ -1,5 +1,5 @@
 if typeof require is 'function'
-  $ = jQuery = require('../vendor/jquery')
+  $ = jQuery = require('./jquery-extensions')
 else
   $ = jQuery = window.jQuery
 
