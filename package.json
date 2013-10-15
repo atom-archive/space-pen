@@ -9,15 +9,15 @@
   "licenses": [
     {
       "type": "MIT",
-      "url": "http://github.com/nathansobo/space-pen/raw/master/LICENSE"
+      "url": "http://github.com/atom/space-pen/raw/master/LICENSE"
     }
   ],
   "repository": {
     "type": "git",
-    "url": "https://github.com/nathansobo/space-pen.git"
+    "url": "https://github.com/atom/space-pen.git"
   },
   "bugs": {
-    "url": "https://github.com/nathansobo/space-pen/issues"
+    "url": "https://github.com/atom/space-pen/issues"
   },
   "devDependencies": {
     "express": "~3.4.0",
