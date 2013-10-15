@@ -129,7 +129,7 @@ $.fn.command = (eventName, selector, options, handler) ->
     options  = selector
     selector = null
 
-  @document(eventName, _.humanizeEventName(eventName, options?["doc"]))
+  @document(eventName, _.humanizeEventName(eventName, options?['doc']))
   @on(eventName, selector, options?['data'], handler)
 
 $.fn.iconSize = (size) ->
