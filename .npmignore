@@ -1,5 +1,11 @@
 .npmignore
-vendor
+vendor/MIT.LICENSE
+vendor/coffee-script.js
+vendor/jasmine-html.js
+vendor/jasmine.css
+vendor/jasmine.js
+vendor/jasmine_favicon.png
+vendor/jquery-matchers.js
 example.*
 *.html
 *.coffee
