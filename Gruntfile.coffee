@@ -47,7 +47,10 @@ module.exports = (grunt) ->
   grunt.loadNpmTasks('grunt-coffeelint')
   grunt.loadNpmTasks('grunt-contrib-connect')
 
-  grunt.registerTask 'clean', -> require('rimraf').sync('space-pen.js')
+  grunt.registerTask 'clean', ->
+    rm = require('rimraf').sync
+    rm('lib')
+    rm('spec/spec-helper.js')
   grunt.registerTask('lint', ['coffeelint'])
   grunt.registerTask('test', ['default', 'shell:browserify', 'shell:test'])
   grunt.registerTask('default', ['coffee', 'lint'])
