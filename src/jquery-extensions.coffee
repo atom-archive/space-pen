@@ -86,7 +86,7 @@ $.fn.preempt = (eventName, handler) ->
   handlers.unshift(handlers.pop())
 
 $.fn.handlers = ->
-  $._data(this[0], 'events')
+  $._data(this[0], 'events') ? {}
 
 $.fn.hasParent = ->
   @parent()[0]?
@@ -112,7 +112,7 @@ $.fn.events = ->
   documentation = @data('documentation') ? {}
   events = {}
 
-  for eventName of @handlers() ? {}
+  for eventName of @handlers()
     events[eventName] = documentation[eventName] ? null
 
   if @hasParent()
