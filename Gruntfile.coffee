@@ -19,6 +19,7 @@ module.exports = (grunt) ->
 
       src: ['src/*.coffee']
       test: ['spec/*.coffee']
+      gruntfile: ['Gruntfile.coffee']
 
     shell:
       browserify:
@@ -47,6 +48,6 @@ module.exports = (grunt) ->
   grunt.loadNpmTasks('grunt-contrib-connect')
 
   grunt.registerTask 'clean', -> require('rimraf').sync('space-pen.js')
-  grunt.registerTask('lint', ['coffeelint:src', 'coffeelint:test'])
+  grunt.registerTask('lint', ['coffeelint'])
   grunt.registerTask('test', ['default', 'shell:browserify', 'shell:test'])
-  grunt.registerTask('default', ['coffee', 'coffeelint'])
+  grunt.registerTask('default', ['coffee', 'lint'])
