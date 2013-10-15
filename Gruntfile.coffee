@@ -48,5 +48,5 @@ module.exports = (grunt) ->
 
   grunt.registerTask 'clean', -> require('rimraf').sync('space-pen.js')
   grunt.registerTask('lint', ['coffeelint:src', 'coffeelint:test'])
-  grunt.registerTask('test', ['shell:browserify', 'shell:test'])
-  grunt.registerTask('default', ['coffeelint', 'coffee'])
+  grunt.registerTask('test', ['default', 'shell:browserify', 'shell:test'])
+  grunt.registerTask('default', ['coffee', 'coffeelint'])
