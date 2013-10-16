@@ -16,12 +16,15 @@
 
   <!-- dependencies -->
   <script type="text/javascript" src="vendor/jquery.js"></script>
+  <script type="text/javascript" src="spec/spec-helper.js"></script>
 
   <!-- implementation -->
-  <script type="text/coffeescript" src="space-pen.coffee"></script>
+  <script type="text/coffeescript" src="src/jquery-extensions.coffee"></script>
+  <script type="text/coffeescript" src="src/space-pen.coffee"></script>
 
   <!-- specs -->
-  <script type="text/coffeescript" src="space-pen-spec.coffee"></script>
+  <script type="text/coffeescript" src="spec/space-pen-spec.coffee"></script>
+  <script type="text/coffeescript" src="spec/jquery-extensions-spec.coffee"></script>
 
   <script type="text/coffeescript">
     jasmineEnv = jasmine.getEnv()

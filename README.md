@@ -274,7 +274,7 @@ is a productivity win.
 To run specs, start a web server in the root of the repository:
 
 ```sh
-gem install serve-this
 cd ~/code/space-pen
-serve-this
+npm install
+npm start
 ```

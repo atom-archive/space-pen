@@ -2,3 +2,5 @@
 node_modules
 space-pen.js
 *.map
+lib
+spec/spec-helper.js

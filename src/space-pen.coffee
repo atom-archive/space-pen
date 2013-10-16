@@ -1,5 +1,5 @@
 if typeof require is 'function'
-  $ = jQuery = require('./vendor/jquery')
+  $ = jQuery = require('./jquery-extensions')
 else
   $ = jQuery = window.jQuery
 
@@ -216,6 +216,9 @@ jQuery.cleanData = (elements) ->
     view.beforeRemove?() if view and view?[0] == element
   originalCleanData(elements)
 
-(exports ? this).View = View
-(exports ? this).$$ = (fn) -> View.render.call(View, fn)
-(exports ? this).$$$ = (fn) -> View.buildHtml.call(View, fn)[0]
+exports = exports ? this
+exports.View = View
+exports.jQuery = jQuery
+exports.$ = $
+exports.$$ = (fn) -> View.render.call(View, fn)
+exports.$$$ = (fn) -> View.buildHtml.call(View, fn)[0]

@@ -3,11 +3,12 @@ module.exports = (grunt) ->
     pkg: grunt.file.readJSON('package.json')
 
     coffee:
-      compile:
-        options:
-          sourceMap: true
-        files:
-          'space-pen.js': 'space-pen.coffee'
+      glob_to_multiple:
+        expand: true
+        cwd: 'src'
+        src: ['*.coffee']
+        dest: 'lib'
+        ext: '.js'
 
     coffeelint:
       options:
@@ -16,12 +17,43 @@ module.exports = (grunt) ->
         max_line_length:
           level: 'ignore'
 
-      src: ['space-pen.coffee']
-      test: ['space-pen-spec.coffee']
+      src: ['src/*.coffee']
+      test: ['spec/*.coffee']
+      gruntfile: ['Gruntfile.coffee']
+
+    shell:
+      browserify:
+        command: 'node_modules/.bin/browserify -t coffeeify spec/spec-helper.coffee -o spec/spec-helper.js'
+        options:
+          stdout: true
+          stderr: true
+          failOnError: true
+
+      test:
+        command: 'node_modules/.bin/coffee spec/headless-spec-runner.coffee'
+        options:
+          stdout: true
+          stderr: true
+          failOnError: true
+
+    connect:
+      server:
+        options:
+          port: 1337
+          keepalive: true
 
   grunt.loadNpmTasks('grunt-contrib-coffee')
+  grunt.loadNpmTasks('grunt-shell')
   grunt.loadNpmTasks('grunt-coffeelint')
+  grunt.loadNpmTasks('grunt-contrib-connect')
 
-  grunt.registerTask 'clean', -> require('rimraf').sync('space-pen.js')
-  grunt.registerTask('lint', ['coffeelint:src', 'coffeelint:test'])
-  grunt.registerTask('default', ['coffeelint', 'coffee'])
+  grunt.registerTask 'clean', ->
+    rm = (pathToDelete) ->
+      grunt.file.delete(pathToDelete) if grunt.file.exists(pathToDelete)
+    rm('lib')
+    rm('spec/spec-helper.js')
+
+  grunt.registerTask('lint', ['coffeelint'])
+  grunt.registerTask('test', ['default', 'shell:browserify', 'shell:test'])
+  grunt.registerTask('start', ['default', 'shell:browserify', 'connect'])
+  grunt.registerTask('default', ['coffee', 'lint'])
