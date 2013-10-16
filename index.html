@@ -1,0 +1,325 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <title>space-pen by atom</title>
+
+    <link rel="stylesheet" href="stylesheets/styles.css">
+    <link rel="stylesheet" href="stylesheets/pygment_trac.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    <!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+  </head>
+  <body>
+    <div class="wrapper">
+      <header>
+        <h1>space-pen</h1>
+        <p>A simple and powerful client-side view framework that works in zero-gravity.</p>
+
+        <p class="view"><a href="https://github.com/atom/space-pen">View the Project on GitHub <small>atom/space-pen</small></a></p>
+
+
+        <ul>
+          <li><a href="https://github.com/atom/space-pen/zipball/master">Download <strong>ZIP File</strong></a></li>
+          <li><a href="https://github.com/atom/space-pen/tarball/master">Download <strong>TAR Ball</strong></a></li>
+          <li><a href="https://github.com/atom/space-pen">View On <strong>GitHub</strong></a></li>
+        </ul>
+      </header>
+      <section>
+        <h1>
+<a name="spacepen-" class="anchor" href="#spacepen-"><span class="octicon octicon-link"></span></a>SpacePen <a href="https://travis-ci.org/atom/space-pen"><img src="https://travis-ci.org/atom/space-pen.png?branch=master" alt="Build Status"></a>
+</h1>
+
+<h2>
+<a name="write-markup-on-the-final-frontier" class="anchor" href="#write-markup-on-the-final-frontier"><span class="octicon octicon-link"></span></a>Write markup on the final frontier</h2>
+
+<p>SpacePen is a powerful but minimalist client-side view framework for
+CoffeeScript. It combines the "view" and "controller" into a single jQuery
+object, whose markup is expressed with an embedded DSL similar to Markaby for
+Ruby.</p>
+
+<h2>
+<a name="basics" class="anchor" href="#basics"><span class="octicon octicon-link"></span></a>Basics</h2>
+
+<p>View objects extend from the View class and have a <a href="https://github.com/content" class="user-mention">@content</a> class method where
+you express their HTML contents with an embedded markup DSL:</p>
+
+<div class="highlight highlight-coffeescript"><pre><span class="k">class</span> <span class="nx">Spacecraft</span> <span class="k">extends</span> <span class="nx">View</span>
+  <span class="vi">@content: </span><span class="nf">-&gt;</span>
+    <span class="nx">@div</span> <span class="o">=&gt;</span>
+      <span class="nx">@h1</span> <span class="s">"Spacecraft"</span>
+      <span class="nx">@ol</span> <span class="o">=&gt;</span>
+        <span class="nx">@li</span> <span class="s">"Apollo"</span>
+        <span class="nx">@li</span> <span class="s">"Soyuz"</span>
+        <span class="nx">@li</span> <span class="s">"Space Shuttle"</span>
+</pre></div>
+
+<p>Views descend from jQuery's prototype, so when you construct one you can call
+jQuery methods on it just as you would a DOM fragment created with <code>$(...)</code>.</p>
+
+<div class="highlight highlight-coffeescript"><pre><span class="nv">view = </span><span class="k">new</span> <span class="nx">Spacecraft</span>
+<span class="nx">view</span><span class="p">.</span><span class="nx">find</span><span class="p">(</span><span class="s">'ol'</span><span class="p">).</span><span class="nx">append</span><span class="p">(</span><span class="s">'&lt;li&gt;Star Destroyer&lt;/li&gt;'</span><span class="p">)</span>
+
+<span class="nx">view</span><span class="p">.</span><span class="nx">on</span> <span class="s">'click'</span><span class="p">,</span> <span class="s">'li'</span><span class="p">,</span> <span class="nf">-&gt;</span>
+  <span class="nx">alert</span> <span class="s">"They clicked on </span><span class="si">#{</span><span class="nx">$</span><span class="p">(</span><span class="k">this</span><span class="p">).</span><span class="nx">text</span><span class="p">()</span><span class="si">}</span><span class="s">"</span>
+</pre></div>
+
+<p>But SpacePen views are more powerful than normal jQuery fragments because they
+let you define custom methods:</p>
+
+<div class="highlight highlight-coffeescript"><pre><span class="k">class</span> <span class="nx">Spacecraft</span> <span class="k">extends</span> <span class="nx">View</span>
+  <span class="vi">@content: </span><span class="nf">-&gt;</span> <span class="p">...</span>
+
+  <span class="nv">addSpacecraft: </span><span class="nf">(name) -&gt;</span>
+    <span class="nx">@find</span><span class="p">(</span><span class="s">'ol'</span><span class="p">).</span><span class="nx">append</span> <span class="s">"&lt;li&gt;</span><span class="si">#{</span><span class="nx">name</span><span class="si">}</span><span class="s">&lt;/li&gt;"</span>
+
+
+<span class="nv">view = </span><span class="k">new</span> <span class="nx">Spacecraft</span>
+<span class="nx">view</span><span class="p">.</span><span class="nx">addSpacecraft</span> <span class="s">"Enterprise"</span>
+</pre></div>
+
+<p>You can also pass arguments on construction, which get passed to both the
+<code>@content</code> method and the view's constructor.</p>
+
+<div class="highlight highlight-coffeescript"><pre><span class="k">class</span> <span class="nx">Spacecraft</span> <span class="k">extends</span> <span class="nx">View</span>
+  <span class="vi">@content: </span><span class="nf">(params) -&gt;</span>
+    <span class="nx">@div</span> <span class="o">=&gt;</span>
+      <span class="nx">@h1</span> <span class="nx">params</span><span class="p">.</span><span class="nx">title</span>
+      <span class="nx">@ol</span> <span class="o">=&gt;</span>
+        <span class="nx">@li</span> <span class="nx">name</span> <span class="k">for</span> <span class="nx">name</span> <span class="k">in</span> <span class="nx">params</span><span class="p">.</span><span class="nx">spacecraft</span>
+
+<span class="nv">view = </span><span class="k">new</span> <span class="nx">Spacecraft</span><span class="p">(</span><span class="nv">title: </span><span class="s">"Space Weapons"</span><span class="p">,</span> <span class="nv">spacecraft: </span><span class="p">[</span><span class="s">"TIE Fighter"</span><span class="p">,</span> <span class="s">"Death Star"</span><span class="p">,</span> <span class="s">"Warbird"</span><span class="p">])</span>
+</pre></div>
+
+<p>Methods from the jQuery prototype can be gracefully overridden using <code>super</code>:</p>
+
+<div class="highlight highlight-coffeescript"><pre><span class="k">class</span> <span class="nx">Spacecraft</span> <span class="k">extends</span> <span class="nx">View</span>
+  <span class="vi">@content: </span><span class="nf">-&gt;</span> <span class="p">...</span>
+
+  <span class="nv">hide: </span><span class="nf">-&gt;</span>
+    <span class="nx">console</span><span class="p">.</span><span class="nx">log</span> <span class="s">"Hiding Spacecraft List"</span>
+    <span class="k">super</span><span class="p">()</span>
+</pre></div>
+
+<p>If you override the View class's constructor, ensure you call <code>super</code>.
+Alternatively, you can define an <code>initialize</code> method, which the constructor will
+call for you automatically with the constructor's arguments.</p>
+
+<div class="highlight highlight-coffeescript"><pre><span class="k">class</span> <span class="nx">Spacecraft</span> <span class="k">extends</span> <span class="nx">View</span>
+  <span class="vi">@content: </span><span class="nf">-&gt;</span> <span class="p">...</span>
+
+  <span class="nv">initialize: </span><span class="nf">(params) -&gt;</span>
+    <span class="vi">@title = </span><span class="nx">params</span><span class="p">.</span><span class="nx">title</span>
+</pre></div>
+
+<h2>
+<a name="outlets-and-events" class="anchor" href="#outlets-and-events"><span class="octicon octicon-link"></span></a>Outlets and Events</h2>
+
+<p>SpacePen will automatically create named reference for any element with an
+<code>outlet</code> attribute. For example, if the <code>ol</code> element has an attribute
+<code>outlet=list</code>, the view object will have a <code>list</code> entry pointing to a jQuery
+wrapper for the <code>ol</code> element.</p>
+
+<div class="highlight highlight-coffeescript"><pre><span class="k">class</span> <span class="nx">Spacecraft</span> <span class="k">extends</span> <span class="nx">View</span>
+  <span class="vi">@content: </span><span class="nf">-&gt;</span>
+    <span class="nx">@div</span> <span class="o">=&gt;</span>
+      <span class="nx">@h1</span> <span class="s">"Spacecraft"</span>
+      <span class="nx">@ol</span> <span class="nv">outlet: </span><span class="s">"list"</span><span class="p">,</span> <span class="o">=&gt;</span>
+        <span class="nx">@li</span> <span class="s">"Apollo"</span>
+        <span class="nx">@li</span> <span class="s">"Soyuz"</span>
+        <span class="nx">@li</span> <span class="s">"Space Shuttle"</span>
+
+  <span class="nv">addSpacecraft: </span><span class="nf">(name) -&gt;</span>
+    <span class="nx">@list</span><span class="p">.</span><span class="nx">append</span><span class="p">(</span><span class="s">"&lt;li&gt;</span><span class="si">#{</span><span class="nx">name</span><span class="si">}</span><span class="s">&lt;/li&gt;"</span><span class="p">)</span>
+</pre></div>
+
+<p>Elements can also have event name attributes whose value references a custom
+method. For example, if a <code>button</code> element has an attribute
+<code>click=launchSpacecraft</code>, then SpacePen will invoke the <code>launchSpacecraft</code>
+method on the button`s parent view when it is clicked:</p>
+
+<div class="highlight highlight-coffeescript"><pre><span class="k">class</span> <span class="nx">Spacecraft</span> <span class="k">extends</span> <span class="nx">View</span>
+  <span class="vi">@content: </span><span class="nf">-&gt;</span>
+    <span class="nx">@div</span> <span class="o">=&gt;</span>
+      <span class="nx">@h1</span> <span class="s">"Spacecraft"</span>
+      <span class="nx">@ol</span> <span class="o">=&gt;</span>
+        <span class="nx">@li</span> <span class="nv">click: </span><span class="s">'launchSpacecraft'</span><span class="p">,</span> <span class="s">"Saturn V"</span>
+
+  <span class="nv">launchSpacecraft: </span><span class="nf">(event, element) -&gt;</span>
+    <span class="nx">console</span><span class="p">.</span><span class="nx">log</span> <span class="s">"Preparing </span><span class="si">#{</span><span class="nx">element</span><span class="p">.</span><span class="nx">name</span><span class="si">}</span><span class="s"> for launch!"</span>
+</pre></div>
+
+<h2>
+<a name="markup-dsl-details" class="anchor" href="#markup-dsl-details"><span class="octicon octicon-link"></span></a>Markup DSL Details</h2>
+
+<h3>
+<a name="tag-methods-div-h1-etc" class="anchor" href="#tag-methods-div-h1-etc"><span class="octicon octicon-link"></span></a>Tag Methods (<code>@div</code>, <code>@h1</code>, etc.)</h3>
+
+<p>As you've seen so far, the markup DSL is pretty straightforward. From the
+<code>@content</code> class method or any method it calls, just invoke instance methods
+named for the HTML tags you want to generate. There are 3 types of arguments you
+can pass to a tag method:</p>
+
+<ul>
+<li><p>Strings
+The string will be HTML-escaped and used as the text contents of the generated tag.</p></li>
+<li><p>Hashes
+The key-value pairs will be used as the attributes of the generated tag.</p></li>
+<li><p>Functions (bound with <code>=&gt;</code>)
+The function will be invoked in-between the open and closing tag to produce
+the HTML element's contents.</p></li>
+</ul><p>If you need to emit a non-standard tag, you can use the <code>@tag(name, args...)</code>
+method to name the tag with a string:</p>
+
+<div class="highlight highlight-coffeescript"><pre><span class="nx">@tag</span> <span class="s">'bubble'</span><span class="p">,</span> <span class="nv">type: </span><span class="s">"speech"</span><span class="p">,</span> <span class="o">=&gt;</span> <span class="p">...</span>
+</pre></div>
+
+<h3>
+<a name="text-methods" class="anchor" href="#text-methods"><span class="octicon octicon-link"></span></a>Text Methods</h3>
+
+<ul>
+<li><p><code>@text(string)</code>
+Emits the HTML-escaped string as text wherever it is called.</p></li>
+<li><p><code>@raw(string)</code>
+Passes the given string through unescaped. Use this when you need to emit markup directly that was generated beforehand.</p></li>
+</ul><h2>
+<a name="subviews" class="anchor" href="#subviews"><span class="octicon octicon-link"></span></a>Subviews</h2>
+
+<p>Subviews are a great way to make your view code more modular. The
+<code>@subview(name, view)</code> method takes a name and another view object. The view
+object will be inserted at the location of the call, and a reference with the
+given name will be wired to it from the parent view. A <code>parentView</code> reference
+will be created on the subview pointing at the parent.</p>
+
+<div class="highlight highlight-coffeescript"><pre><span class="k">class</span> <span class="nx">Spacecraft</span> <span class="k">extends</span> <span class="nx">View</span>
+  <span class="vi">@content: </span><span class="nf">(params) -&gt;</span>
+    <span class="nx">@div</span> <span class="o">=&gt;</span>
+      <span class="nx">@subview</span> <span class="s">'launchController'</span><span class="p">,</span> <span class="k">new</span> <span class="nx">LaunchController</span><span class="p">(</span><span class="nv">countdown: </span><span class="nx">params</span><span class="p">.</span><span class="nx">countdown</span><span class="p">)</span>
+      <span class="nx">@h1</span> <span class="s">"Spacecraft"</span>
+      <span class="p">...</span>
+</pre></div>
+
+<h2>
+<a name="freeform-markup-generation" class="anchor" href="#freeform-markup-generation"><span class="octicon octicon-link"></span></a>Freeform Markup Generation</h2>
+
+<p>You don't need a View class to use the SpacePen markup DSL. Call <code>View.render</code>
+with an unbound function (<code>-&gt;</code>, not <code>=&gt;</code>) that calls tag methods, and it will
+return a document fragment for ad-hoc use. This method is also assigned to the
+<code>$$</code> global variable for convenience.</p>
+
+<div class="highlight highlight-coffeescript"><pre><span class="nx">view</span><span class="p">.</span><span class="nx">list</span><span class="p">.</span><span class="nx">append</span> <span class="nx">$$</span> <span class="nf">-&gt;</span>
+  <span class="nx">@li</span> <span class="o">=&gt;</span>
+    <span class="nx">@text</span> <span class="s">"Starship"</span>
+    <span class="nx">@em</span> <span class="s">"Enterprise"</span>
+</pre></div>
+
+<h2>
+<a name="jquery-extensions" class="anchor" href="#jquery-extensions"><span class="octicon octicon-link"></span></a>jQuery extensions</h2>
+
+<h3>
+<a name="fnview" class="anchor" href="#fnview"><span class="octicon octicon-link"></span></a>$.fn.view</h3>
+
+<p>You can retrieve the view object for any DOM element by calling <code>view()</code> on it.
+This usually shouldn't be necessary, as most DOM manipulation will take place
+within the view itself using outlet references, but is occasionally helpful.</p>
+
+<div class="highlight highlight-coffeescript"><pre><span class="nv">view = </span><span class="k">new</span> <span class="nx">Spacecraft</span>
+<span class="nx">$</span><span class="p">(</span><span class="s">'body'</span><span class="p">).</span><span class="nx">append</span><span class="p">(</span><span class="nx">view</span><span class="p">)</span>
+
+<span class="c1"># assuming no other li elements on the DOM, for example purposes,</span>
+<span class="c1"># the following expression should be true</span>
+<span class="nx">$</span><span class="p">(</span><span class="s">'li'</span><span class="p">).</span><span class="nx">view</span><span class="p">()</span> <span class="o">==</span> <span class="nx">view</span>
+</pre></div>
+
+<h3>
+<a name="after-attach-hooks" class="anchor" href="#after-attach-hooks"><span class="octicon octicon-link"></span></a>After Attach Hooks</h3>
+
+<p>The <code>initialize</code> method is always called when the view is still a detached DOM
+fragment, before it is appended to the DOM. This is usually okay, but
+occasionally you'll have some initialization logic that depends on the view
+actually being on the DOM. For example, you may depend on applying a CSS rule
+before measuring an element's height.</p>
+
+<p>SpacePen extends jQuery manipulation methods like <code>append</code>, <code>replaceWith</code>, etc.
+to call <code>afterAttach</code> hooks on your view objects when they are appended to other
+elements. The hook will be called with a boolean value indicating whether the
+view is attached to the main DOM or just to another DOM fragment. If
+<code>afterAttach</code> is called with <code>true</code>, you can assume your object is attached to
+the page.</p>
+
+<div class="highlight highlight-coffeescript"><pre><span class="k">class</span> <span class="nx">Spacecraft</span> <span class="k">extends</span> <span class="nx">View</span>
+  <span class="vi">@content: </span><span class="nf">-&gt;</span> <span class="p">...</span>
+
+  <span class="nv">afterAttach: </span><span class="nf">(onDom) -&gt;</span>
+    <span class="k">if</span> <span class="nx">onDom</span>
+      <span class="nx">console</span><span class="p">.</span><span class="nx">log</span> <span class="s">"With CSS applied, my height is"</span><span class="p">,</span> <span class="nx">@height</span><span class="p">()</span>
+    <span class="k">else</span>
+      <span class="nx">console</span><span class="p">.</span><span class="nx">log</span> <span class="s">"I just attached to"</span><span class="p">,</span> <span class="nx">@parent</span><span class="p">()</span>
+</pre></div>
+
+<h3>
+<a name="before-remove-hooks" class="anchor" href="#before-remove-hooks"><span class="octicon octicon-link"></span></a>Before Remove Hooks</h3>
+
+<p>SpacePen calls the <code>beforeRemove</code> hook whenever a view is removed from the DOM
+via a jQuery method. This works if the view is removed directly with <code>remove</code> or
+indirectly when a method like <code>empty</code> or <code>html</code> is called on a parent element.
+This is a good place to clean up subscriptions and other view-specific state.</p>
+
+<div class="highlight highlight-coffeescript"><pre><span class="k">class</span> <span class="nx">Spacecraft</span> <span class="k">extends</span> <span class="nx">View</span>
+  <span class="vi">@content: </span><span class="nf">-&gt;</span> <span class="p">...</span>
+
+  <span class="nv">initialize: </span><span class="nf">-&gt;</span>
+    <span class="nx">$</span><span class="p">(</span><span class="nb">window</span><span class="p">).</span><span class="nx">on</span> <span class="s">'resize.spacecraft'</span><span class="p">,</span> <span class="nf">-&gt;</span> <span class="p">...</span>
+
+  <span class="nv">beforeRemove: </span><span class="nf">-&gt;</span>
+    <span class="nx">$</span><span class="p">(</span><span class="nb">window</span><span class="p">).</span><span class="nx">off</span><span class="p">(</span><span class="s">'.spacecraft'</span><span class="p">)</span>
+</pre></div>
+
+<h2>
+<a name="anticipated-concerns--objections" class="anchor" href="#anticipated-concerns--objections"><span class="octicon octicon-link"></span></a>Anticipated Concerns / Objections</h2>
+
+<h3>
+<a name="what-about-the-viewcontroller-distinction" class="anchor" href="#what-about-the-viewcontroller-distinction"><span class="octicon octicon-link"></span></a>What about the view/controller distinction?</h3>
+
+<p>MVC was invented in a setting where graphics rendering was substantially more
+complex than it is in a web browser. In Cocoa development, for example, a view
+object's primary role is to implement <code>drawRect</code> and forward UI events to the
+controller. But in a browser, you don't need to handle your own rendering with
+<code>drawRect</code>. Instead, you express the view declaratively using markup and CSS,
+and the browser takes care of the rest. The closest thing to a MVC "view" in
+this world is a fragment of markup, but this contains very little logic. On the
+web, the view/controller distinction is like a vestigial organ: It's a solution
+to a problem we no longer have, and no longer justifies the conceptual overhead
+of using two objects where one would do.</p>
+
+<h3>
+<a name="our-designers-cant-handle-writing-markup-in-coffeescript" class="anchor" href="#our-designers-cant-handle-writing-markup-in-coffeescript"><span class="octicon octicon-link"></span></a>Our designers can't handle writing markup in CoffeeScript</h3>
+
+<p>Okay. SpacePen might not be the right fit for you. But are you sure they can't
+handle it? What if you pair with them for a couple hours and teach them what to
+do? There's also the potential of plugging in another template language for
+content generation, while keeping the rest of the framework. But if developers
+are writing the majority of the markup, expressing it directly in CoffeeScript
+is a productivity win.</p>
+
+<h2>
+<a name="hacking-on-spacepen" class="anchor" href="#hacking-on-spacepen"><span class="octicon octicon-link"></span></a>Hacking on SpacePen</h2>
+
+<p>To run specs, start a web server in the root of the repository:</p>
+
+<div class="highlight highlight-sh"><pre><span class="nb">cd</span> ~/code/space-pen
+npm install
+npm start
+</pre></div>
+      </section>
+      <footer>
+        <p>This project is maintained by <a href="https://github.com/atom">atom</a></p>
+        <p><small>Hosted on GitHub Pages &mdash; Theme by <a href="https://github.com/orderedlist">orderedlist</a></small></p>
+      </footer>
+    </div>
+    <script src="javascripts/scale.fix.js"></script>
+    
+  </body>
+</html>
