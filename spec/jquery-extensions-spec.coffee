@@ -145,6 +145,28 @@ describe 'jQuery extensions', ->
       view.scrollToTop()
       expect(view.scrollTop()).toBe 0
 
+  describe "$.fn.handlers(eventName)", ->
+    it "returns all registered event handlers", ->
+      view = $$ -> @div('div')
+
+      expect(view.handlers()).toEqual {}
+      expect(view.handlers('blur')).toEqual []
+      expect(view.handlers('focus')).toEqual []
+
+      blurHandler1 = ->
+      blurHandler2 = ->
+      view.on 'blur', blurHandler1
+      view.on 'blur', blurHandler2
+      focusHandler1 = ->
+      view.on 'focus', focusHandler1
+
+      expect(view.handlers()['blur'][0].handler).toBe blurHandler1
+      expect(view.handlers()['blur'][1].handler).toBe blurHandler2
+      expect(view.handlers()['focus'][0].handler).toBe focusHandler1
+      expect(view.handlers('blur')[0].handler).toBe blurHandler1
+      expect(view.handlers('blur')[1].handler).toBe blurHandler2
+      expect(view.handlers('focus')[0].handler).toEqual focusHandler1
+
   describe "Event.prototype", ->
     class GrandchildView extends View
       @content: -> @div class: 'grandchild'
