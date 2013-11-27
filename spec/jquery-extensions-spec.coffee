@@ -146,6 +146,10 @@ describe 'jQuery extensions', ->
       expect(view.scrollTop()).toBe 0
 
   describe "$.fn.handlers(eventName)", ->
+    it "returns no handlers when the element does not exist", ->
+      view = $('.notinthepageoranything')
+      expect(view.handlers()).toEqual {}
+
     it "returns all registered event handlers", ->
       view = $$ -> @div('div')
 
