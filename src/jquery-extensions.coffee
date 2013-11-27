@@ -92,7 +92,7 @@ $.fn.preempt = (eventName, handler) ->
 # event name isn't specified or an array of event handlers if an event name is
 # specified. This method never returns null or undefined.
 $.fn.handlers = (eventName) ->
-  handlers = $._data(this[0], 'events') ? {}
+  handlers = if this.length then $._data(this[0], 'events') ? {} else {}
   handlers = handlers[eventName] ? [] if arguments.length is 1
   handlers
 
