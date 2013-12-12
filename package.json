@@ -1,6 +1,6 @@
 {
   "name": "space-pen",
-  "version": "2.0.1",
+  "version": "2.0.2",
   "description": "Write markup on the final frontier",
   "main": "./lib/space-pen.js",
   "scripts": {
