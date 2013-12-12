@@ -3,7 +3,7 @@ if typeof require is 'function'
 else
   $ = jQuery = window.jQuery
 
-elements =
+Tags =
   'a abbr address article aside audio b bdi bdo blockquote body button
    canvas caption cite code colgroup datalist dd del details dfn div dl dt em
    fieldset figcaption figure footer form h1 h2 h3 h4 h5 h6 head header hgroup
@@ -13,11 +13,11 @@ elements =
    th thead time title tr u ul video area base br col command embed hr img input
    keygen link meta param source track wbrk'.split /\s+/
 
-voidElements =
+SelfClosingTags =
   'area base br col command embed hr img input keygen link meta param
    source track wbr'.split /\s+/
 
-events =
+Events =
   'blur change click dblclick error focus input keydown
    keypress keyup load mousedown mousemove mouseout mouseover
    mouseup resize scroll select submit unload'.split /\s+/
@@ -27,7 +27,7 @@ idCounter = 0
 class View extends jQuery
   @builderStack: null
 
-  elements.forEach (tagName) ->
+  Tags.forEach (tagName) ->
     View[tagName] = (args...) -> @currentBuilder.tag(tagName, args...)
 
   @subview: (name, view) ->
@@ -88,7 +88,7 @@ class View extends jQuery
       element.attr('outlet', null)
 
   bindEventHandlers: (view) ->
-    for eventName in events
+    for eventName in Events
       selector = "[#{eventName}]"
       elements = view.find(selector).add(view.filter(selector))
       elements.each ->
@@ -121,7 +121,7 @@ class Builder
 
     @openTag(name, options.attributes)
 
-    if name in voidElements
+    if name in SelfClosingTags
       if (options.text? or options.content?)
         throw new Error("Self-closing tag #{name} cannot have text or content")
     else
