@@ -87,7 +87,7 @@ class View extends jQuery
       outlet = element.getAttribute('outlet')
       element = $(element)
       view[outlet] = element
-      element[0].removeAttribute('outlet', null)
+      element[0].removeAttribute('outlet')
 
     undefined
 
