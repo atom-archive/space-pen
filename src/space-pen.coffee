@@ -65,7 +65,7 @@ class View extends jQuery
   constructor: (args...) ->
     [html, postProcessingSteps] = @constructor.buildHtml -> @content(args...)
     jQuery.fn.init.call(this, html)
-    throw new Error("View markup must have a single root element") if this.length != 1
+    throw new Error("View markup must have a single root element") if @length != 1
     @wireOutlets(this)
     @bindEventHandlers(this)
     jQuery.data(@[0], 'view', this)
