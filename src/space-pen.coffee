@@ -197,7 +197,9 @@ callAttachHook = (element) ->
 
   elementsWithHooks = []
   elementsWithHooks.push(element[0]) if element.attr?('callAttachHooks')
-  elementsWithHooks = elementsWithHooks.concat(element.find?('[callAttachHooks]').toArray() ? []) if onDom
+  if onDom
+    for child in element[0].querySelectorAll('[callAttachHooks]')
+      elementsWithHooks.push(child)
 
   $(element).view()?.afterAttach?(onDom) for element in elementsWithHooks
 
