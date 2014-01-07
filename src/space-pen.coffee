@@ -195,7 +195,7 @@ jQuery.fn.views = -> @toArray().map (elt) -> $(elt).view()
 # Trigger attach event when views are added to the DOM
 callAttachHook = (element) ->
   return unless element
-  onDom = element.parents?('html').length > 0
+  onDom = element.isOnDom?()
 
   elementsWithHooks = []
   if element[0].getAttribute('callAttachHooks')
