@@ -90,11 +90,16 @@ class View extends jQuery
   bindEventHandlers: (view) ->
     for eventName in Events
       selector = "[#{eventName}]"
-      elements = view.find(selector).add(view.filter(selector))
-      elements.each ->
-        element = $(this)
-        methodName = element.attr(eventName)
-        element.on eventName, (event) -> view[methodName](event, element)
+      for element in view[0].querySelectorAll(selector)
+        do (element) ->
+          element = $(element)
+          methodName = element.attr(eventName)
+          element.on eventName, (event) -> view[methodName](event, element)
+
+      if view[0].webkitMatchesSelector(selector)
+        methodName = view.attr(eventName)
+        do (methodName) ->
+          view.on eventName, (event) -> view[methodName](event, view)
 
   # `pushStack` and `end` are jQuery methods that construct new wrappers.
   # we override them here to construct plain wrappers with `jQuery` rather
