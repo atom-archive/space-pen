@@ -5,7 +5,6 @@ class BenchmarkView extends View
       @ul =>
         @li "child#{index}"
 
-
 parent = $('#container')
 startTime = Date.now()
 parent.append(new BenchmarkView(i)) for i in [1..1000]
