@@ -198,7 +198,8 @@ callAttachHook = (element) ->
   onDom = element.parents?('html').length > 0
 
   elementsWithHooks = []
-  elementsWithHooks.push(element[0]) if element[0].getAttribute('callAttachHooks')
+  if element[0].getAttribute('callAttachHooks')
+    elementsWithHooks.push(element[0])
   if onDom
     for child in element[0].querySelectorAll('[callAttachHooks]')
       elementsWithHooks.push(child)
