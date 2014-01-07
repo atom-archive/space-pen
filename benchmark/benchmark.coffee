@@ -9,4 +9,4 @@ class BenchmarkView extends View
 parent = $('#container')
 startTime = Date.now()
 parent.append(new BenchmarkView(i)) for i in [1..1000]
-parent.prepend("Time to create 1000 views: #{Date.now() - startTime}ms")
+parent.prepend("Time to create 1,000 views: #{Date.now() - startTime}ms")
