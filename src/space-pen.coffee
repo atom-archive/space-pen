@@ -85,9 +85,8 @@ class View extends jQuery
   wireOutlets: (view) ->
     for element in view[0].querySelectorAll('[outlet]')
       outlet = element.getAttribute('outlet')
-      element = $(element)
-      view[outlet] = element
-      element[0].removeAttribute('outlet')
+      view[outlet] = $(element)
+      element.removeAttribute('outlet')
 
     undefined
 
