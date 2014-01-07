@@ -179,13 +179,13 @@ class Builder
   extractOptions: (args) ->
     options = {}
     for arg in args
-      type = typeof(arg)
-      if type is "function"
-        options.content = arg
-      else if type is "string" or type is "number"
-        options.text = arg.toString()
-      else
-        options.attributes = arg
+      switch typeof(arg)
+        when 'function'
+          options.content = arg
+        when 'string', 'number'
+          options.text = arg.toString()
+        else
+          options.attributes = arg
     options
 
 jQuery.fn.view = -> @data('view')
