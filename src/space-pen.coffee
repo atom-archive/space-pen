@@ -71,7 +71,7 @@ class View extends jQuery
     jQuery.data(@[0], 'view', this)
     for element in @[0].getElementsByTagName('*')
       jQuery.data(element, 'view', this)
-    @attr('callAttachHooks', true)
+    @[0].setAttribute('callAttachHooks', true)
     step(this) for step in postProcessingSteps
     @initialize?(args...)
 
@@ -84,10 +84,10 @@ class View extends jQuery
 
   wireOutlets: (view) ->
     for element in view[0].querySelectorAll('[outlet]')
+      outlet = element.getAttribute('outlet')
       element = $(element)
-      outlet = element.attr('outlet')
       view[outlet] = element
-      element.attr('outlet', null)
+      element[0].removeAttribute('outlet', null)
 
     undefined
 
@@ -96,12 +96,12 @@ class View extends jQuery
       selector = "[#{eventName}]"
       for element in view[0].querySelectorAll(selector)
         do (element) ->
+          methodName = element.getAttribute(eventName)
           element = $(element)
-          methodName = element.attr(eventName)
           element.on eventName, (event) -> view[methodName](event, element)
 
       if view[0].webkitMatchesSelector(selector)
-        methodName = view.attr(eventName)
+        methodName = view[0].getAttribute(eventName)
         do (methodName) ->
           view.on eventName, (event) -> view[methodName](event, view)
 
@@ -198,7 +198,7 @@ callAttachHook = (element) ->
   onDom = element.parents?('html').length > 0
 
   elementsWithHooks = []
-  elementsWithHooks.push(element[0]) if element.attr?('callAttachHooks')
+  elementsWithHooks.push(element[0]) if element[0].getAttribute('callAttachHooks')
   if onDom
     for child in element[0].querySelectorAll('[callAttachHooks]')
       elementsWithHooks.push(child)
