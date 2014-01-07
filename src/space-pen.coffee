@@ -13,9 +13,9 @@ Tags =
    th thead time title tr u ul video area base br col command embed hr img input
    keygen link meta param source track wbrk'.split /\s+/
 
-SelfClosingTags =
-  'area base br col command embed hr img input keygen link meta param
-   source track wbr'.split /\s+/
+SelfClosingTags = {}
+'area base br col command embed hr img input keygen link meta param
+ source track wbr'.split(/\s+/).forEach (tag) -> SelfClosingTags[tag] = true
 
 Events =
   'blur change click dblclick error focus input keydown
@@ -65,11 +65,13 @@ class View extends jQuery
   constructor: (args...) ->
     [html, postProcessingSteps] = @constructor.buildHtml -> @content(args...)
     jQuery.fn.init.call(this, html)
-    throw new Error("View markup must have a single root element") if this.length != 1
+    throw new Error("View markup must have a single root element") if @length != 1
     @wireOutlets(this)
     @bindEventHandlers(this)
-    @find('*').andSelf().data('view', this)
-    @attr('callAttachHooks', true)
+    jQuery.data(@[0], 'view', this)
+    for element in @[0].getElementsByTagName('*')
+      jQuery.data(element, 'view', this)
+    @[0].setAttribute('callAttachHooks', true)
     step(this) for step in postProcessingSteps
     @initialize?(args...)
 
@@ -81,20 +83,28 @@ class View extends jQuery
     postProcessingSteps
 
   wireOutlets: (view) ->
-    @find('[outlet]').each ->
-      element = $(this)
-      outlet = element.attr('outlet')
-      view[outlet] = element
-      element.attr('outlet', null)
+    for element in view[0].querySelectorAll('[outlet]')
+      outlet = element.getAttribute('outlet')
+      view[outlet] = $(element)
+      element.removeAttribute('outlet')
+
+    undefined
 
   bindEventHandlers: (view) ->
     for eventName in Events
       selector = "[#{eventName}]"
-      elements = view.find(selector).add(view.filter(selector))
-      elements.each ->
-        element = $(this)
-        methodName = element.attr(eventName)
-        element.on eventName, (event) -> view[methodName](event, element)
+      for element in view[0].querySelectorAll(selector)
+        do (element) ->
+          methodName = element.getAttribute(eventName)
+          element = $(element)
+          element.on eventName, (event) -> view[methodName](event, element)
+
+      if view[0].webkitMatchesSelector(selector)
+        methodName = view[0].getAttribute(eventName)
+        do (methodName) ->
+          view.on eventName, (event) -> view[methodName](event, view)
+
+    undefined
 
   # `pushStack` and `end` are jQuery methods that construct new wrappers.
   # we override them here to construct plain wrappers with `jQuery` rather
@@ -121,8 +131,8 @@ class Builder
 
     @openTag(name, options.attributes)
 
-    if name in SelfClosingTags
-      if (options.text? or options.content?)
+    if SelfClosingTags.hasOwnProperty(name)
+      if options.text? or options.content?
         throw new Error("Self-closing tag #{name} cannot have text or content")
     else
       options.content?()
@@ -169,13 +179,13 @@ class Builder
   extractOptions: (args) ->
     options = {}
     for arg in args
-      type = typeof(arg)
-      if type is "function"
-        options.content = arg
-      else if type is "string" or type is "number"
-        options.text = arg.toString()
-      else
-        options.attributes = arg
+      switch typeof(arg)
+        when 'function'
+          options.content = arg
+        when 'string', 'number'
+          options.text = arg.toString()
+        else
+          options.attributes = arg
     options
 
 jQuery.fn.view = -> @data('view')
@@ -184,11 +194,14 @@ jQuery.fn.views = -> @toArray().map (elt) -> $(elt).view()
 # Trigger attach event when views are added to the DOM
 callAttachHook = (element) ->
   return unless element
-  onDom = element.parents?('html').length > 0
+  onDom = element.isOnDom?()
 
   elementsWithHooks = []
-  elementsWithHooks.push(element[0]) if element.attr?('callAttachHooks')
-  elementsWithHooks = elementsWithHooks.concat(element.find?('[callAttachHooks]').toArray() ? []) if onDom
+  if element[0].getAttribute('callAttachHooks')
+    elementsWithHooks.push(element[0])
+  if onDom
+    for child in element[0].querySelectorAll('[callAttachHooks]')
+      elementsWithHooks.push(child)
 
   $(element).view()?.afterAttach?(onDom) for element in elementsWithHooks
 

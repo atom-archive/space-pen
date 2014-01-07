@@ -35,6 +35,6 @@
     "grunt-contrib-connect": "~0.5.0"
   },
   "dependencies": {
-    "underscore-plus": "~0.2.0"
+    "underscore-plus": "~0.6.1"
   }
 }

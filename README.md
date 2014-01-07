@@ -271,10 +271,13 @@ is a productivity win.
 
 ## Hacking on SpacePen
 
-To run specs, start a web server in the root of the repository:
-
 ```sh
-cd ~/code/space-pen
+git clone https://github.com/atom/space-pen.git
+cd space-pen
 npm install
 npm start
 ```
+
+* Open http://localhost:1337 to run the specs
+* Open http://localhost:1337/benchmark to run the benchmarks
+* Open http://localhost:1337/examples to browse the examples

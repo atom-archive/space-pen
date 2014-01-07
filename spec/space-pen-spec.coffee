@@ -113,6 +113,14 @@ describe "View", ->
 
         expect(-> new BadView).toThrow("View markup must have a single root element")
 
+      it "throws an exception if the view has a self closing tag with text", ->
+        BadView = class extends View
+          @content: ->
+            @div =>
+              @img 'text'
+
+        expect(-> new BadView).toThrow("Self-closing tag img cannot have text or content")
+
     describe "when a view is attached to another element via jQuery", ->
       [content, view2, view3, view4] = []
 
