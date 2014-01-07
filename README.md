@@ -278,6 +278,6 @@ npm install
 npm start
 ```
 
-  * Open http://localhost:1337 to run the specs
-  * Open http://localhost:1337/benchmark to run the benchmarks
-  * Open http://localhost:1337/examples to browse the examples
+* Open http://localhost:1337 to run the specs
+* Open http://localhost:1337/benchmark to run the benchmarks
+* Open http://localhost:1337/examples to browse the examples
