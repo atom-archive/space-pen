@@ -81,8 +81,8 @@ class View extends jQuery
     postProcessingSteps
 
   wireOutlets: (view) ->
-    @find('[outlet]').each ->
-      element = $(this)
+    for element in view[0].querySelectorAll('[outlet]')
+      element = $(element)
       outlet = element.attr('outlet')
       view[outlet] = element
       element.attr('outlet', null)
