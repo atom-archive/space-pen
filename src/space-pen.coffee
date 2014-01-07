@@ -13,9 +13,9 @@ Tags =
    th thead time title tr u ul video area base br col command embed hr img input
    keygen link meta param source track wbrk'.split /\s+/
 
-SelfClosingTags =
-  'area base br col command embed hr img input keygen link meta param
-   source track wbr'.split /\s+/
+SelfClosingTags = {}
+'area base br col command embed hr img input keygen link meta param
+ source track wbr'.split(/\s+/).forEach (tag) -> SelfClosingTags[tag] = true
 
 Events =
   'blur change click dblclick error focus input keydown
@@ -132,7 +132,7 @@ class Builder
 
     @openTag(name, options.attributes)
 
-    if name in SelfClosingTags
+    if SelfClosingTags.hasOwnProperty(name)
       if options.text? or options.content?
         throw new Error("Self-closing tag #{name} cannot have text or content")
     else
