@@ -133,7 +133,7 @@ class Builder
     @openTag(name, options.attributes)
 
     if name in SelfClosingTags
-      if (options.text? or options.content?)
+      if options.text? or options.content?
         throw new Error("Self-closing tag #{name} cannot have text or content")
     else
       options.content?()
