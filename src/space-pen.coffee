@@ -68,7 +68,9 @@ class View extends jQuery
     throw new Error("View markup must have a single root element") if this.length != 1
     @wireOutlets(this)
     @bindEventHandlers(this)
-    @find('*').andSelf().data('view', this)
+    jQuery.data(@[0], 'view', this)
+    for element in @[0].getElementsByTagName('*')
+      jQuery.data(element, 'view', this)
     @attr('callAttachHooks', true)
     step(this) for step in postProcessingSteps
     @initialize?(args...)
