@@ -87,6 +87,8 @@ class View extends jQuery
       view[outlet] = element
       element.attr('outlet', null)
 
+    undefined
+
   bindEventHandlers: (view) ->
     for eventName in Events
       selector = "[#{eventName}]"
@@ -100,6 +102,8 @@ class View extends jQuery
         methodName = view.attr(eventName)
         do (methodName) ->
           view.on eventName, (event) -> view[methodName](event, view)
+
+    undefined
 
   # `pushStack` and `end` are jQuery methods that construct new wrappers.
   # we override them here to construct plain wrappers with `jQuery` rather
