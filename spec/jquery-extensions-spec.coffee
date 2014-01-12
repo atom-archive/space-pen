@@ -171,6 +171,26 @@ describe 'jQuery extensions', ->
       expect(view.handlers('blur')[1].handler).toBe blurHandler2
       expect(view.handlers('focus')[0].handler).toEqual focusHandler1
 
+  if document.hasFocus() # It's not currently possible to run this spec in phantomjs
+    describe "$.fn.hasFocus()", ->
+      it "returns true if the element is focused or contains an element that is focused", ->
+        $('#jasmine-content').append $$ ->
+          @div id: 'parent', tabindex: -1, =>
+            @div id: 'child', tabindex: -1
+        parent = $('#parent')
+        child = $('#child')
+
+        expect(parent.hasFocus()).toBe false
+
+        parent.focus()
+        expect(parent.hasFocus()).toBe true
+
+        parent.blur()
+        expect(parent.hasFocus()).toBe false
+
+        child.focus()
+        expect(parent.hasFocus()).toBe true
+
   describe "Event.prototype", ->
     class GrandchildView extends View
       @content: -> @div class: 'grandchild'

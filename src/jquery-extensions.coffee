@@ -99,6 +99,9 @@ $.fn.handlers = (eventName) ->
 $.fn.hasParent = ->
   @parent()[0]?
 
+$.fn.hasFocus = ->
+  @is(':focus') or @is(':has(:focus)')
+
 $.fn.flashError = ->
   @addClass 'error'
   removeErrorClass = => @removeClass 'error'
