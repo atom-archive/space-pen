@@ -24,19 +24,47 @@ Events =
 
 idCounter = 0
 
+# Public: View class that extends the jQuery prototype.
+#
+# Extending classes must implement a `@content` method.
+#
+# ## Example
+# ```coffee
+# class Spacecraft extends View
+#   @content: ->
+#     @div =>
+#       @h1 'Spacecraft'
+#       @ol =>
+#         @li 'Apollo'
+#         @li 'Soyuz'
+#         @li 'Space Shuttle'
+# ```
+#
+# Each view instance will have all the methods from the jQuery prototype
+# available on it.
+#
+# ```coffee
+#   craft = new Spacecraft()
+#   craft.find('h1').text() # 'Spacecraft'
+#   craft.appendTo(document.body) # View is now a child of the <body> tag
+# ```
 class View extends jQuery
   @builderStack: null
 
   Tags.forEach (tagName) ->
     View[tagName] = (args...) -> @currentBuilder.tag(tagName, args...)
 
+  # Public: Add the given subview wired to an outlet with the given name
   @subview: (name, view) ->
     @currentBuilder.subview(name, view)
 
+  # Public: Add a text node with the given text content
   @text: (string) -> @currentBuilder.text(string)
 
+  # Public: Add a new tag with the given name
   @tag: (tagName, args...) -> @currentBuilder.tag(tagName, args...)
 
+  # Public: Add new child DOM nodes from the given raw HTML string.
   @raw: (string) -> @currentBuilder.raw(string)
 
   @pushBuilder: ->
