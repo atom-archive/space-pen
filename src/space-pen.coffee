@@ -160,7 +160,7 @@ class View extends jQuery
   command: (commandName, selector, options, handler) ->
     super(commandName, selector, options, handler)
 
-  # Public: Force an event handler to be called before all others. Mimics the
+  # Public: Preempt events registered with jQuery's `::on`.
   #
   # eventName - A event name {String}.
   # handler - A {Function} to execute when the eventName is triggered.
