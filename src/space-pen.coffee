@@ -146,6 +146,27 @@ class View extends jQuery
   end: ->
     @prevObject ? jQuery(null)
 
+  # Public: Calls the given handler when commandName is triggered on the {View}.
+  #
+  # This is enhanced version of jQuery's `::on` method. It listens for a custom
+  # DOM event and adds metadata to the DOM to maintain a list of all commands.
+  #
+  # commandName - A namespaced {String} describing the command, such as
+  #               `find-and-replace:toggle`.
+  # selector - An optional selector {String} to filter the descendants of the
+  #            elements that trigger the event.
+  # options - An optional options {Object} with an `data` key.
+  # handler - A {Function} to execute when the command is triggered.
+  command: (commandName, selector, options, handler) ->
+    super(commandName, selector, options, handler)
+
+  # Public: Preempt events registered with jQuery's `::on`.
+  #
+  # eventName - A event name {String}.
+  # handler - A {Function} to execute when the eventName is triggered.
+  preempt: (eventName, handler) ->
+    super(eventName, handler)
+
 class Builder
   constructor: ->
     @document = []
