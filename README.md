@@ -110,7 +110,7 @@ class Spacecraft extends View
 Elements can also have event name attributes whose value references a custom
 method. For example, if a `button` element has an attribute
 `click=launchSpacecraft`, then SpacePen will invoke the `launchSpacecraft`
-method on the button`s parent view when it is clicked:
+method on the button's parent view when it is clicked:
 
 ```coffeescript
 class Spacecraft extends View
