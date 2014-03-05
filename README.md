@@ -2,7 +2,7 @@
 
 ## Write markup on the final frontier
 
-SpacePen is a powerful but minimalist client-side view framework for
+SpacePen is a powerful but minimalistic client-side view framework for
 CoffeeScript. It combines the "view" and "controller" into a single jQuery
 object, whose markup is expressed with an embedded DSL similar to Markaby for
 Ruby.
