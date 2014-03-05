@@ -132,15 +132,11 @@ As you've seen so far, the markup DSL is pretty straightforward. From the
 named for the HTML tags you want to generate. There are 3 types of arguments you
 can pass to a tag method:
 
-* Strings
-  The string will be HTML-escaped and used as the text contents of the generated tag.
+* *Strings*: The string will be HTML-escaped and used as the text contents of the generated tag.
 
-* Hashes
-  The key-value pairs will be used as the attributes of the generated tag.
+* *Hashes*: The key-value pairs will be used as the attributes of the generated tag.
 
-* Functions (bound with `=>`)
-  The function will be invoked in-between the open and closing tag to produce
-  the HTML element's contents.
+* *Functions* (bound with `=>`): The function will be invoked in-between the open and closing tag to produce the HTML element's contents.
 
 If you need to emit a non-standard tag, you can use the `@tag(name, args...)`
 method to name the tag with a string:
@@ -151,11 +147,9 @@ method to name the tag with a string:
 
 ### Text Methods
 
-* `@text(string)`
-  Emits the HTML-escaped string as text wherever it is called.
+* `@text(string)`: Emits the HTML-escaped string as text wherever it is called.
 
-* `@raw(string)`
-  Passes the given string through unescaped. Use this when you need to emit markup directly that was generated beforehand.
+* `@raw(string)`: Passes the given string through unescaped. Use this when you need to emit markup directly that was generated beforehand.
 
 ## Subviews
 
