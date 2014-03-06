@@ -127,7 +127,7 @@ class View extends jQuery
           element = $(element)
           element.on eventName, (event) -> view[methodName](event, element)
 
-      if view[0].webkitMatchesSelector(selector)
+      if view.matching(selector)
         methodName = view[0].getAttribute(eventName)
         do (methodName) ->
           view.on eventName, (event) -> view[methodName](event, view)
@@ -239,6 +239,9 @@ class Builder
 
 jQuery.fn.view = -> @data('view')
 jQuery.fn.views = -> @toArray().map (elt) -> $(elt).view()
+docEl = document.documentElement
+matches = docEl.matchesSelector || docEl.mozMatchesSelector || docEl.webkitMatchesSelector || docEl.oMatchesSelector || docEl.msMatchesSelector
+jQuery.fn.matching = if matches then ((selector) -> matches.call(@[0], selector)) else jQuery.fn.is
 
 # Trigger attach event when views are added to the DOM
 callAttachHook = (element) ->
