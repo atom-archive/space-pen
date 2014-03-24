@@ -22,6 +22,12 @@ Events =
    keypress keyup load mousedown mousemove mouseout mouseover
    mouseup resize scroll select submit unload'.split /\s+/
 
+# Use native matchesSelector if available, otherwise fall back
+# on jQuery.is (slower, but compatible)
+docEl = document.documentElement
+matches = docEl.matchesSelector || docEl.mozMatchesSelector || docEl.webkitMatchesSelector || docEl.oMatchesSelector || docEl.msMatchesSelector
+matchesSelector = if matches then ((elem, selector) -> matches.call(elem[0], selector)) else ((elem, selector) -> elem.is(selector))
+
 idCounter = 0
 
 # Public: View class that extends the jQuery prototype.
@@ -127,7 +133,7 @@ class View extends jQuery
           element = $(element)
           element.on eventName, (event) -> view[methodName](event, element)
 
-      if view[0].webkitMatchesSelector(selector)
+      if matchesSelector(view, selector)
         methodName = view[0].getAttribute(eventName)
         do (methodName) ->
           view.on eventName, (event) -> view[methodName](event, view)
