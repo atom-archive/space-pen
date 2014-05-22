@@ -244,7 +244,9 @@ class Builder
     options
 
 jQuery.fn.view = -> @data('view')
-jQuery.fn.views = -> @toArray().map (elt) -> $(elt).view()
+jQuery.fn.views = -> @toArray().map (elt) ->
+  $elt = $(elt)
+  $elt.view() ? $elt
 
 # Trigger attach event when views are added to the DOM
 callAttachHook = (element) ->
