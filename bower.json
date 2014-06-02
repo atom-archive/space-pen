@@ -1,0 +1,32 @@
+{
+  "name": "space-pen",
+  "version": "3.2.0",
+  "homepage": "https://github.com/atom/space-pen",
+  "authors": [
+    "Kevin Sawicki <kevinsawicki@gmail.com>",
+    "nathansobo <nathan@github.com>"
+  ],
+  "description": "A simple and powerful client-side view framework that works in zero-gravity.",
+  "main": "./lib/space-pen.js",
+  "keywords": [
+    "view-engine"
+  ],
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "*.html",
+    "node_modules",
+    "bower_components",
+    "src",
+    "spec",
+    "examples",
+    "benchmark",
+    "vendor",
+    "Gruntfile.coffee",
+    "package.json"
+  ],
+  "dependencies": {
+    "underscore-plus": "1.x",
+    "jquery": "2.x"
+  }
+}
