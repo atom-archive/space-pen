@@ -4,6 +4,12 @@ if typeof require is 'function'
 else
   {$, _} = window
 
+jQuery.fn.view = -> @data('view')
+
+jQuery.fn.views = -> @toArray().map (elt) ->
+  $elt = $(elt)
+  $elt.view() ? $elt
+
 $.fn.scrollBottom = (newValue) ->
   if newValue?
     @scrollTop(newValue - @height())
