@@ -171,6 +171,21 @@ describe 'jQuery extensions', ->
       expect(view.handlers('blur')[1].handler).toBe blurHandler2
       expect(view.handlers('focus')[0].handler).toEqual focusHandler1
 
+  describe "$.fn.view()", ->
+    it "returns the containing view", ->
+      class TestView extends View
+        @content: (params={}, otherArg) ->
+          @div =>
+            @h1 "Hello"
+
+      view = new TestView
+      expect(view.find('h1').view()).toBe view
+
+      # also works for non-jQuery DOM nodes
+      node = document.createElement('div')
+      view.find('h1')[0].appendChild(node)
+      expect($(node).view()).toBe view
+
   if document.hasFocus() # It's not currently possible to run this spec in phantomjs
     describe "$.fn.hasFocus()", ->
       it "returns true if the element is focused or contains an element that is focused", ->
