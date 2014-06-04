@@ -4,13 +4,13 @@ if typeof require is 'function'
 else
   {$, _} = window
 
-jQuery.fn.view = ->
+$.fn.view = ->
   element = this
   while element.length > 0
     return view if view = element.data('view')
     element = element.parent()
 
-jQuery.fn.views = -> @toArray().map (elt) ->
+$.fn.views = -> @toArray().map (elt) ->
   $elt = $(elt)
   $elt.view() ? $elt
 
