@@ -119,10 +119,10 @@ $.fn.flashError = ->
   window.setTimeout(removeErrorClass, 300)
 
 $.fn.trueHeight = ->
-  this[0].getBoundingClientRect().height
+  @[0].getBoundingClientRect().height
 
 $.fn.trueWidth = ->
-  this[0].getBoundingClientRect().width
+  @[0].getBoundingClientRect().width
 
 $.fn.document = (eventName, docString) ->
   eventDescriptions = {}
@@ -164,8 +164,8 @@ $.fn.intValue = ->
   parseInt(@text())
 
 $.Event.prototype.abortKeyBinding = ->
-$.Event.prototype.currentTargetView = -> $(this.currentTarget).view()
-$.Event.prototype.targetView = -> $(this.target).view()
+$.Event.prototype.currentTargetView = -> $(@currentTarget).view()
+$.Event.prototype.targetView = -> $(@target).view()
 
 if module?
   module.exports = $
