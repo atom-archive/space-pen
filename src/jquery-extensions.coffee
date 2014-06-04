@@ -96,7 +96,8 @@ $.fn.preempt = (eventName, handler) ->
   handlers.unshift(handlers.pop())
 
 # Public: Get the event handlers registered on an element
-#   * eventName: The optional event name to get all handlers for.
+#
+# eventName - The optional event name to get all handlers for.
 #
 # Returns an object of event name keys to handler array values if an
 # event name isn't specified or an array of event handlers if an event name is
