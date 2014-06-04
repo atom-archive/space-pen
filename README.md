@@ -1,4 +1,4 @@
-# SpacePen [![Build Status](https://travis-ci.org/atom/space-pen.png?branch=master)](https://travis-ci.org/atom/space-pen)
+# SpacePen [![Build Status](https://travis-ci.org/atom/space-pen.svg?branch=master)](https://travis-ci.org/atom/space-pen)
 
 ## Write markup on the final frontier
 
