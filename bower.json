@@ -22,7 +22,8 @@
     "benchmark",
     "vendor",
     "Gruntfile.coffee",
-    "package.json"
+    "package.json",
+    "lib"
   ],
   "dependencies": {
     "underscore-plus": "1.x",
