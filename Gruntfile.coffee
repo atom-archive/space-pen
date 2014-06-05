@@ -3,11 +3,18 @@ module.exports = (grunt) ->
     pkg: grunt.file.readJSON('package.json')
 
     coffee:
-      glob_to_multiple:
+      lib:
         expand: true
         cwd: 'src'
         src: ['*.coffee']
         dest: 'lib'
+        ext: '.js'
+
+      dist:
+        expand: true
+        cwd: 'src'
+        src: ['*.coffee']
+        dest: 'dist'
         ext: '.js'
 
     coffeelint:
@@ -56,4 +63,5 @@ module.exports = (grunt) ->
   grunt.registerTask('lint', ['coffeelint'])
   grunt.registerTask('test', ['default', 'shell:browserify', 'shell:test'])
   grunt.registerTask('start', ['default', 'shell:browserify', 'connect'])
-  grunt.registerTask('default', ['coffee', 'lint'])
+  grunt.registerTask('bower', ['coffee:dist', 'lint'])
+  grunt.registerTask('default', ['coffee:lib', 'lint'])

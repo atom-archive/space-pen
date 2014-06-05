@@ -15,3 +15,4 @@ spec/
 .travis.yml
 npm-debug.log
 benchmark/
+dist/
