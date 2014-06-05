@@ -16,3 +16,4 @@ spec/
 npm-debug.log
 benchmark/
 dist/
+bower.json
