@@ -64,4 +64,5 @@ module.exports = (grunt) ->
   grunt.registerTask('test', ['default', 'shell:browserify', 'shell:test'])
   grunt.registerTask('start', ['default', 'shell:browserify', 'connect'])
   grunt.registerTask('bower', ['coffee:dist', 'lint'])
+  grunt.registerTask('prepublish', ['clean', 'coffee:lib', 'lint'])
   grunt.registerTask('default', ['coffee:lib', 'lint'])

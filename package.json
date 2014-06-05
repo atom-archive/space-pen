@@ -4,7 +4,7 @@
   "description": "Write markup on the final frontier",
   "main": "./lib/space-pen.js",
   "scripts": {
-    "prepublish": "node_modules/.bin/grunt clean lint coffee",
+    "prepublish": "node_modules/.bin/grunt prepublish",
     "test": "node_modules/.bin/grunt test",
     "start": "node_modules/.bin/grunt start"
   },
