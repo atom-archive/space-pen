@@ -1,6 +1,6 @@
 if typeof require is 'function'
   _ = require 'underscore-plus'
-  $ = require '../vendor/jquery'
+  $ = jQuery = require '../vendor/jquery'
 else
   {_, jQuery} = window
   $ = jQuery
