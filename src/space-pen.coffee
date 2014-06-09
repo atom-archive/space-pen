@@ -286,14 +286,17 @@ jQuery.cleanData = (elements) ->
 # jQuery extensions
 
 $.fn.view = ->
-  element = this
-  while element.length > 0
-    return view if view = element.data('view')
-    element = element.parent()
+  @data('view')
 
 $.fn.views = -> @toArray().map (elt) ->
   $elt = $(elt)
   $elt.view() ? $elt
+
+$.fn.containingView = ->
+  element = this
+  while element.length > 0
+    return view if view = element.data('view')
+    element = element.parent()
 
 $.fn.scrollBottom = (newValue) ->
   if newValue?
@@ -445,8 +448,8 @@ $.fn.intValue = ->
   parseInt(@text())
 
 $.Event.prototype.abortKeyBinding = ->
-$.Event.prototype.currentTargetView = -> $(@currentTarget).view()
-$.Event.prototype.targetView = -> $(@target).view()
+$.Event.prototype.currentTargetView = -> $(@currentTarget).containingView()
+$.Event.prototype.targetView = -> $(@target).containingView()
 
 # Exports
 
