@@ -31,8 +31,9 @@ describe 'jQuery extensions', ->
     describe 'when the event is namespaced', ->
       it 'calls handler', ->
         element.preempt 'foo.bar', -> events.push(4)
+        bazSubscription = element.preempt 'foo.baz', -> events.push(5)
         element.trigger 'foo'
-        expect(events).toEqual [4,2,1,3]
+        expect(events).toEqual [5,4,2,1,3]
 
         events = []
         element.trigger 'foo.bar'
@@ -40,6 +41,11 @@ describe 'jQuery extensions', ->
 
         events = []
         element.off('.bar')
+        element.trigger 'foo'
+        expect(events).toEqual [5,2,1,3]
+
+        events = []
+        bazSubscription.off()
         element.trigger 'foo'
         expect(events).toEqual [2,1,3]
 
