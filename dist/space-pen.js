@@ -6,7 +6,7 @@
 
   if (typeof require === 'function') {
     _ = require('underscore-plus');
-    $ = require('../vendor/jquery');
+    $ = jQuery = require('../vendor/jquery');
   } else {
     _ = window._, jQuery = window.jQuery;
     $ = jQuery;
@@ -390,14 +390,7 @@
   };
 
   $.fn.view = function() {
-    var element, view;
-    element = this;
-    while (element.length > 0) {
-      if (view = element.data('view')) {
-        return view;
-      }
-      element = element.parent();
-    }
+    return this.data('view');
   };
 
   $.fn.views = function() {
@@ -406,6 +399,17 @@
       $elt = $(elt);
       return (_ref2 = $elt.view()) != null ? _ref2 : $elt;
     });
+  };
+
+  $.fn.containingView = function() {
+    var element, view;
+    element = this;
+    while (element.length > 0) {
+      if (view = element.data('view')) {
+        return view;
+      }
+      element = element.parent();
+    }
   };
 
   $.fn.scrollBottom = function(newValue) {
@@ -503,17 +507,24 @@
   };
 
   $.fn.preempt = function(eventName, handler) {
-    var eventNameWithoutNamespace, handlers, _ref2;
-    this.on(eventName, function() {
+    var eventNameWithoutNamespace, handlers, wrappedHandler, _ref2,
+      _this = this;
+    wrappedHandler = function() {
       var args, e;
       e = arguments[0], args = 2 <= arguments.length ? __slice.call(arguments, 1) : [];
       if (handler.apply(null, [e].concat(__slice.call(args))) === false) {
         return e.stopImmediatePropagation();
       }
-    });
+    };
+    this.on(eventName, wrappedHandler);
     eventNameWithoutNamespace = eventName.split('.')[0];
     handlers = (_ref2 = this.handlers()[eventNameWithoutNamespace]) != null ? _ref2 : [];
-    return handlers.unshift(handlers.pop());
+    handlers.unshift(handlers.pop());
+    return {
+      off: function() {
+        return _this.off(eventName, wrappedHandler);
+      }
+    };
   };
 
   $.fn.handlers = function(eventName) {
@@ -602,11 +613,11 @@
   $.Event.prototype.abortKeyBinding = function() {};
 
   $.Event.prototype.currentTargetView = function() {
-    return $(this.currentTarget).view();
+    return $(this.currentTarget).containingView();
   };
 
   $.Event.prototype.targetView = function() {
-    return $(this.target).view();
+    return $(this.target).containingView();
   };
 
   exports = exports != null ? exports : this;
