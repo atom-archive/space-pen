@@ -372,12 +372,15 @@ $.fn.containsElement = (element) ->
   (element[0].compareDocumentPosition(this[0]) & 8) == 8
 
 $.fn.preempt = (eventName, handler) ->
-  @on eventName, (e, args...) ->
+  wrappedHandler = (e, args...) ->
     if handler(e, args...) == false then e.stopImmediatePropagation()
+  @on(eventName, wrappedHandler)
 
   eventNameWithoutNamespace = eventName.split('.')[0]
   handlers = @handlers()[eventNameWithoutNamespace] ? []
   handlers.unshift(handlers.pop())
+
+  off: => @off(eventName, wrappedHandler)
 
 # Public: Get the event handlers registered on an element
 #
