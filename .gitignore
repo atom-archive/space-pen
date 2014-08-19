@@ -3,3 +3,4 @@ node_modules
 *.map
 lib
 spec/spec-helper.js
+api.json

@@ -53,16 +53,18 @@ module.exports = (grunt) ->
   grunt.loadNpmTasks('grunt-shell')
   grunt.loadNpmTasks('grunt-coffeelint')
   grunt.loadNpmTasks('grunt-contrib-connect')
+  grunt.loadNpmTasks('grunt-atomdoc')
 
   grunt.registerTask 'clean', ->
     rm = (pathToDelete) ->
       grunt.file.delete(pathToDelete) if grunt.file.exists(pathToDelete)
     rm('lib')
     rm('spec/spec-helper.js')
+    rm('api.json')
 
   grunt.registerTask('lint', ['coffeelint'])
   grunt.registerTask('test', ['default', 'shell:browserify', 'shell:test'])
   grunt.registerTask('start', ['default', 'shell:browserify', 'connect'])
   grunt.registerTask('bower', ['coffee:dist', 'lint'])
-  grunt.registerTask('prepublish', ['clean', 'coffee:lib', 'lint'])
+  grunt.registerTask('prepublish', ['clean', 'coffee:lib', 'lint', 'atomdoc'])
   grunt.registerTask('default', ['coffee:lib', 'lint'])

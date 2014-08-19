@@ -32,7 +32,8 @@
     "jasmine-focused": "~0.15.0",
     "grunt-shell": "~0.5.0",
     "coffeeify": "~0.5.1",
-    "grunt-contrib-connect": "~0.5.0"
+    "grunt-contrib-connect": "~0.5.0",
+    "grunt-atomdoc": "^0.2.0"
   },
   "dependencies": {
     "underscore-plus": "1.x"
