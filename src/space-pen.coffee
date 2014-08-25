@@ -36,7 +36,8 @@ idCounter = 0
 #
 # Extending classes must implement a `@content` method.
 #
-# ## Example
+# ## Examples
+#
 # ```coffee
 # class Spacecraft extends View
 #   @content: ->
@@ -159,19 +160,19 @@ class View extends jQuery
   # This is enhanced version of jQuery's `::on` method. It listens for a custom
   # DOM event and adds metadata to the DOM to maintain a list of all commands.
   #
-  # commandName - A namespaced {String} describing the command, such as
-  #               `find-and-replace:toggle`.
-  # selector - An optional selector {String} to filter the descendants of the
-  #            elements that trigger the event.
-  # options - An optional options {Object} with an `data` key.
-  # handler - A {Function} to execute when the command is triggered.
+  # * `commandName` A namespaced {String} describing the command, such as
+  #                 `find-and-replace:toggle`.
+  # * `selector` An optional selector {String} to filter the descendants of the
+  #              elements that trigger the event.
+  # * `options` An optional options {Object} with an `data` key.
+  # * `handler` A {Function} to execute when the command is triggered.
   command: (commandName, selector, options, handler) ->
     super(commandName, selector, options, handler)
 
   # Public: Preempt events registered with jQuery's `::on`.
   #
-  # eventName - A event name {String}.
-  # handler - A {Function} to execute when the eventName is triggered.
+  # * `eventName` A event name {String}.
+  # * `handler` A {Function} to execute when the eventName is triggered.
   preempt: (eventName, handler) ->
     super(eventName, handler)
 
@@ -384,9 +385,9 @@ $.fn.preempt = (eventName, handler) ->
 
 # Public: Get the event handlers registered on an element
 #
-# eventName - The optional event name to get all handlers for.
+# * `eventName` The optional event name to get all handlers for.
 #
-# Returns an object of event name keys to handler array values if an
+# Returns an {Object} of event name keys to handler array values if an
 # event name isn't specified or an array of event handlers if an event name is
 # specified. This method never returns null or undefined.
 $.fn.handlers = (eventName) ->
