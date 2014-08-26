@@ -64,16 +64,26 @@ class View extends jQuery
     View[tagName] = (args...) -> @currentBuilder.tag(tagName, args...)
 
   # Public: Add the given subview wired to an outlet with the given name
+  #
+  # * `name` {String} name of the subview
+  # * `view` DOM element or jQuery node subview
   @subview: (name, view) ->
     @currentBuilder.subview(name, view)
 
   # Public: Add a text node with the given text content
+  #
+  # * `string` {String} text contents of the node
   @text: (string) -> @currentBuilder.text(string)
 
   # Public: Add a new tag with the given name
+  #
+  # * `tagName` {String} name of the tag like 'li', etc
+  # * `args...` other arguments
   @tag: (tagName, args...) -> @currentBuilder.tag(tagName, args...)
 
   # Public: Add new child DOM nodes from the given raw HTML string.
+  #
+  # * `string` {String} HTML content
   @raw: (string) -> @currentBuilder.raw(string)
 
   @pushBuilder: ->
@@ -161,9 +171,9 @@ class View extends jQuery
   # DOM event and adds metadata to the DOM to maintain a list of all commands.
   #
   # * `commandName` A namespaced {String} describing the command, such as
-  #                 `find-and-replace:toggle`.
+  #   `find-and-replace:toggle`.
   # * `selector` An optional selector {String} to filter the descendants of the
-  #              elements that trigger the event.
+  #   elements that trigger the event.
   # * `options` An optional options {Object} with an `data` key.
   # * `handler` A {Function} to execute when the command is triggered.
   command: (commandName, selector, options, handler) ->
