@@ -43,6 +43,13 @@ module.exports = (grunt) ->
           stderr: true
           failOnError: true
 
+      'update-atomdoc':
+        command: 'npm update grunt-atomdoc'
+        options:
+          stdout: true
+          stderr: true
+          failOnError: true
+
     connect:
       server:
         options:
@@ -66,5 +73,5 @@ module.exports = (grunt) ->
   grunt.registerTask('test', ['default', 'shell:browserify', 'shell:test'])
   grunt.registerTask('start', ['default', 'shell:browserify', 'connect'])
   grunt.registerTask('bower', ['coffee:dist', 'lint'])
-  grunt.registerTask('prepublish', ['clean', 'coffee:lib', 'lint', 'atomdoc'])
+  grunt.registerTask('prepublish', ['clean', 'coffee:lib', 'lint', 'shell:update-atomdoc', 'atomdoc'])
   grunt.registerTask('default', ['coffee:lib', 'lint'])
