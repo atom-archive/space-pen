@@ -109,17 +109,25 @@ class View extends jQuery
     step(fragment) for step in postProcessingSteps
     fragment
 
+  element: null
+
   constructor: (args...) ->
-    [html, postProcessingSteps] = @constructor.buildHtml -> @content(args...)
-    jQuery.fn.init.call(this, html)
-    throw new Error("View markup must have a single root element") if @length != 1
+    if @element?
+      jQuery.fn.init.call(this, @element)
+    else
+      [html, postProcessingSteps] = @constructor.buildHtml -> @content(args...)
+      jQuery.fn.init.call(this, html)
+      throw new Error("View markup must have a single root element") if @length != 1
+      @element = @[0]
+
     @wireOutlets(this)
     @bindEventHandlers(this)
-    jQuery.data(@[0], 'view', this)
-    for element in @[0].getElementsByTagName('*')
+    jQuery.data(@element, 'view', this)
+    for element in @element.getElementsByTagName('*')
       jQuery.data(element, 'view', this)
-    @[0].setAttribute('callAttachHooks', true)
-    step(this) for step in postProcessingSteps
+    @element.setAttribute('callAttachHooks', true)
+    if postProcessingSteps?
+      step(this) for step in postProcessingSteps
     @initialize?(args...)
 
   buildHtml: (params) ->
