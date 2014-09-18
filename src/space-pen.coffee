@@ -267,7 +267,15 @@ class Builder
 callAttachHooks = (element) ->
   element = element[0] if element instanceof jQuery
   return unless element instanceof HTMLElement
-  onDom = document.body.contains(element)
+
+  onDom = false
+  ancestor = element.parentElement
+  while ancestor
+    if ancestor.tagName is 'HTML'
+      onDom = true
+      break
+    ancestor = ancestor.parentElement
+
   view.afterAttach?(onDom) for view in getViewsWithHooks(element, onDom)
 
 callRemoveHooks = (element) ->
