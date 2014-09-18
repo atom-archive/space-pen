@@ -264,19 +264,30 @@ class Builder
           options.attributes = arg
     options
 
-# Trigger attach event when views are added to the DOM
-callAttachHook = (element) ->
-  return unless element instanceof jQuery and element[0]
-  onDom = element.parents?('html').length > 0
+callAttachHooks = (element) ->
+  element = element[0] if element instanceof jQuery
+  return unless element instanceof HTMLElement
+  onDom = document.body.contains(element)
+  view.afterAttach?(onDom) for view in getViewsWithHooks(element, onDom)
 
-  elementsWithHooks = []
-  if element[0].getAttribute('callAttachHooks')
-    elementsWithHooks.push(element[0])
-  if onDom
-    for child in element[0].querySelectorAll('[callAttachHooks]')
-      elementsWithHooks.push(child)
+callRemoveHooks = (element) ->
+  element = element[0] if element instanceof jQuery
+  return unless element?
+  view.beforeRemove?() for view in getViewsWithHooks(element, true)
 
-  $(element).view()?.afterAttach?(onDom) for element in elementsWithHooks
+getViewsWithHooks = (element, includeDescendants) ->
+  views = []
+
+  if element.getAttribute('callAttachHooks')
+    if view = $(element).view()
+      views.push(view)
+
+  if includeDescendants
+    for descendantElement in element.querySelectorAll('[callAttachHooks]')
+      if view = $(descendantElement).view()
+        views.push(view)
+
+  views
 
 for methodName in ['append', 'prepend', 'after', 'before']
   do (methodName) ->
@@ -284,7 +295,7 @@ for methodName in ['append', 'prepend', 'after', 'before']
     jQuery.fn[methodName] = (args...) ->
       flatArgs = [].concat args...
       result = originalMethod.apply(this, flatArgs)
-      callAttachHook arg for arg in flatArgs
+      callAttachHooks arg for arg in flatArgs
       result
 
 for methodName in ['prependTo', 'appendTo', 'insertAfter', 'insertBefore']
@@ -292,7 +303,7 @@ for methodName in ['prependTo', 'appendTo', 'insertAfter', 'insertBefore']
     originalMethod = jQuery.fn[methodName]
     jQuery.fn[methodName] = (args...) ->
       result = originalMethod.apply(this, args)
-      callAttachHook(this)
+      callAttachHooks(this)
       result
 
 originalCleanData = jQuery.cleanData
@@ -481,3 +492,5 @@ exports.jQuery = jQuery
 exports.$ = $
 exports.$$ = (fn) -> View.render.call(View, fn)
 exports.$$$ = (fn) -> View.buildHtml.call(View, fn)[0]
+exports.callAttachHooks = callAttachHooks
+exports.callRemoveHooks = callRemoveHooks
