@@ -276,14 +276,14 @@ callAttachHooks = (element) ->
       break
     ancestor = ancestor.parentElement
 
-  view.afterAttach?(onDom) for view in getViewsWithHooks(element, onDom)
+  view.afterAttach?(onDom) for view in viewsForElement(element, onDom)
 
 callRemoveHooks = (element) ->
   element = element[0] if element instanceof jQuery
   return unless element?
-  view.beforeRemove?() for view in getViewsWithHooks(element, true)
+  view.beforeRemove?() for view in viewsForElement(element)
 
-getViewsWithHooks = (element, includeDescendants) ->
+viewsForElement = (element, includeDescendants=true) ->
   views = []
 
   if element.getAttribute('callAttachHooks')
@@ -502,3 +502,4 @@ exports.$$ = (fn) -> View.render.call(View, fn)
 exports.$$$ = (fn) -> View.buildHtml.call(View, fn)[0]
 exports.callAttachHooks = callAttachHooks
 exports.callRemoveHooks = callRemoveHooks
+exports.viewsForElement = viewsForElement
