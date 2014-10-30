@@ -32,6 +32,20 @@ matchesSelector = if matches then ((elem, selector) -> matches.call(elem[0], sel
 
 idCounter = 0
 
+CustomElementPrototype = Object.create(HTMLElement::)
+CustomElementPrototype.attachedCallback = -> @attached?()
+CustomElementPrototype.detachedCallback = -> @detached?()
+
+# Register globally so multiple versions of SpacePen still share the same set
+# of custom elements. This prevents element re-definition. If the simple element
+# API needs to change in the future we'll need a different naming scheme anyway.
+window.__spacePenCustomElements = {}
+registerElement = (tagName) ->
+  customTagName = "space-pen-#{tagName}"
+  window.__spacePenCustomElements[customTagName] ?=
+    document.registerElement(customTagName, prototype: CustomElementPrototype, extends: tagName)
+  customTagName
+
 # Public: View class that extends the jQuery prototype.
 #
 # Extending classes must implement a `@content` method.
@@ -120,12 +134,14 @@ class View extends jQuery
       throw new Error("View markup must have a single root element") if @length != 1
       @element = @[0]
 
+    @element.attached = => @attached?()
+    @element.detached = => @detached?()
+
     @wireOutlets(this)
     @bindEventHandlers(this)
     jQuery.data(@element, 'view', this)
     for element in @element.getElementsByTagName('*')
       jQuery.data(element, 'view', this)
-    @element.setAttribute('callAttachHooks', true)
     if postProcessingSteps?
       step(this) for step in postProcessingSteps
     @initialize?(args...)
@@ -216,6 +232,10 @@ class Builder
       @closeTag(name)
 
   openTag: (name, attributes) ->
+    if @document.length is 0
+      attributes ?= {}
+      attributes.is ?= registerElement(name)
+
     attributePairs =
       for attributeName, value of attributes
         "#{attributeName}=\"#{value}\""
@@ -263,63 +283,6 @@ class Builder
         else
           options.attributes = arg
     options
-
-callAttachHooks = (element) ->
-  element = element[0] if element instanceof jQuery
-  return unless element instanceof HTMLElement
-
-  onDom = false
-  ancestor = element.parentElement
-  while ancestor
-    if ancestor.tagName is 'HTML'
-      onDom = true
-      break
-    ancestor = ancestor.parentElement
-
-  view.afterAttach?(onDom) for view in viewsForElement(element, onDom)
-
-callRemoveHooks = (element) ->
-  element = element[0] if element instanceof jQuery
-  return unless element?
-  view.beforeRemove?() for view in viewsForElement(element)
-
-viewsForElement = (element, includeDescendants=true) ->
-  views = []
-
-  if element.getAttribute('callAttachHooks')
-    if view = $(element).view()
-      views.push(view)
-
-  if includeDescendants
-    for descendantElement in element.querySelectorAll('[callAttachHooks]')
-      if view = $(descendantElement).view()
-        views.push(view)
-
-  views
-
-for methodName in ['append', 'prepend', 'after', 'before']
-  do (methodName) ->
-    originalMethod = $.fn[methodName]
-    jQuery.fn[methodName] = (args...) ->
-      flatArgs = [].concat args...
-      result = originalMethod.apply(this, flatArgs)
-      callAttachHooks arg for arg in flatArgs
-      result
-
-for methodName in ['prependTo', 'appendTo', 'insertAfter', 'insertBefore']
-  do (methodName) ->
-    originalMethod = jQuery.fn[methodName]
-    jQuery.fn[methodName] = (args...) ->
-      result = originalMethod.apply(this, args)
-      callAttachHooks(this)
-      result
-
-originalCleanData = jQuery.cleanData
-jQuery.cleanData = (elements) ->
-  for element in elements
-    view = $(element).view()
-    view.beforeRemove?() if view and view?[0] == element
-  originalCleanData(elements)
 
 # jQuery extensions
 
@@ -500,6 +463,3 @@ exports.jQuery = jQuery
 exports.$ = $
 exports.$$ = (fn) -> View.render.call(View, fn)
 exports.$$$ = (fn) -> View.buildHtml.call(View, fn)[0]
-exports.callAttachHooks = callAttachHooks
-exports.callRemoveHooks = callRemoveHooks
-exports.viewsForElement = viewsForElement

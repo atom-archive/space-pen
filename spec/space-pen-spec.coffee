@@ -121,101 +121,16 @@ describe "View", ->
 
         expect(-> new BadView).toThrow("Self-closing tag img cannot have text or content")
 
-    describe "when a view is attached to another element via jQuery", ->
-      [content, view2, view3, view4] = []
-
-      beforeEach ->
-        view2 = new TestView
-        view3 = new TestView
-        view4 = new TestView
-
-        view.afterAttach = jasmine.createSpy 'view.afterAttach'
-        view.subview.afterAttach = jasmine.createSpy('view.subview.afterAttach')
-        view2.afterAttach = jasmine.createSpy('view2.afterAttach')
-        view3.afterAttach = jasmine.createSpy('view3.afterAttach')
-        expect(view4.afterAttach).toBeUndefined()
-
-      describe "when attached to an element that is on the DOM", ->
-        beforeEach ->
-          content = $('#jasmine-content')
-
-        afterEach ->
-          content.empty()
-
-        describe "when $.fn.append is called with a single argument", ->
-          it "calls afterAttach (if it is present) on the appended view and its subviews, passing true to indicate they are on the DOM", ->
-            content.append view
-            expect(view.afterAttach).toHaveBeenCalledWith(true)
-            expect(view.subview.afterAttach).toHaveBeenCalledWith(true)
-
-        describe "when $.fn.append is called with multiple arguments", ->
-          it "calls afterAttach (if it is present) on all appended views and their subviews, passing true to indicate they are on the DOM", ->
-            content.append view, view2, [view3, view4]
-            expect(view.afterAttach).toHaveBeenCalledWith(true)
-            expect(view.subview.afterAttach).toHaveBeenCalledWith(true)
-            expect(view2.afterAttach).toHaveBeenCalledWith(true)
-            expect(view3.afterAttach).toHaveBeenCalledWith(true)
-
-        describe "when $.fn.insertBefore is called on the view", ->
-          it "calls afterAttach on the view and its subviews", ->
-            otherElt = $('<div>')
-            content.append(otherElt)
-            view.insertBefore(otherElt)
-            expect(view.afterAttach).toHaveBeenCalledWith(true)
-            expect(view.subview.afterAttach).toHaveBeenCalledWith(true)
-
-        describe "when a view is attached as part of a larger dom fragment", ->
-          it "calls afterAttach on the view and its subviews", ->
-            otherElt = $('<div>')
-            otherElt.append(view)
-            content.append(otherElt)
-            expect(view.afterAttach).toHaveBeenCalledWith(true)
-            expect(view.subview.afterAttach).toHaveBeenCalledWith(true)
-
-      describe "when attached to an element that is not on the DOM", ->
-        it "calls afterAttach (if it is present) on the appended view, passing false to indicate it isn't on the DOM", ->
-          fragment = $('<div>')
-          fragment.append view
-          expect(view.afterAttach).toHaveBeenCalledWith(false)
-
-        it "doesn't call afterAttach a second time until the view is attached to the DOM", ->
-          fragment = $('<div>')
-          fragment.append view
-          view.afterAttach.reset()
-
-          otherFragment = $('<div>')
-          otherFragment.append(fragment)
-          expect(view.afterAttach).not.toHaveBeenCalled()
-
-      it "allows $.fn.append to be called with undefined without raising an exception", ->
-        view.append undefined
-
-    describe "when a view is removed from the DOM", ->
-      it "calls the `beforeRemove` hook once for each view", ->
+    describe "when a view is attached/detached to/from the DOM", ->
+      it "calls ::attached hooks if present", ->
         content = $('#jasmine-content')
-        parent = $$ -> @div()
-        parent.append(view)
-        content.append(parent)
+        view.attached = jasmine.createSpy('attached hook')
+        view.detached = jasmine.createSpy('detached hook')
+        content.append(view)
+        expect(view.attached).toHaveBeenCalled()
 
-        view.beforeRemove = jasmine.createSpy 'beforeRemove'
-        subviewParentViewDuringRemove = null
-        view.subview.beforeRemove = ->
-          subviewParentViewDuringRemove = view.subview.parent().view()
-
-        parent.remove()
-        expect(view.beforeRemove).toHaveBeenCalled()
-        expect(view.beforeRemove.callCount).toBe 1
-        expect(subviewParentViewDuringRemove).toBe view
-
-      it "the view instance is no longer accessible by calling view()", ->
-        content = $('#jasmine-content')
-        parent = $$ -> @div()
-        parent.append(view)
-        content.append(parent)
-
-        expect($(view[0]).view()).toBe view
-        parent.remove()
-        expect($(view[0]).view()).toBeFalsy()
+        view.detach()
+        expect(view.detached).toHaveBeenCalled()
 
     describe "when the view constructs a new jQuery wrapper", ->
       it "constructs instances of jQuery rather than the view class", ->
