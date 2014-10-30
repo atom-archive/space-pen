@@ -122,10 +122,14 @@ class View extends jQuery
 
     @wireOutlets(this)
     @bindEventHandlers(this)
-    jQuery.data(@element, 'view', this)
-    for element in @element.getElementsByTagName('*')
-      jQuery.data(element, 'view', this)
     @element.setAttribute('callAttachHooks', true)
+
+    @element.spacePenView = this
+    treeWalker = document.createTreeWalker(@element, NodeFilter.SHOW_ELEMENT)
+    while element = treeWalker.nextNode()
+      element.spacePenView = this
+
+
     if postProcessingSteps?
       step(this) for step in postProcessingSteps
     @initialize?(args...)
@@ -324,17 +328,17 @@ jQuery.cleanData = (elements) ->
 # jQuery extensions
 
 $.fn.view = ->
-  @data('view')
+  @[0]?.spacePenView
 
 $.fn.views = -> @toArray().map (elt) ->
   $elt = $(elt)
   $elt.view() ? $elt
 
 $.fn.containingView = ->
-  element = this
-  while element.length > 0
-    return view if view = element.data('view')
-    element = element.parent()
+  element = @[0]
+  while element?
+    return view if view = element.spacePenView
+    element = element.parentNode
 
 $.fn.scrollBottom = (newValue) ->
   if newValue?
