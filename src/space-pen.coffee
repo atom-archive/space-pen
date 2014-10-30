@@ -192,18 +192,15 @@ class View extends jQuery
   end: ->
     @prevObject ? jQuery(null)
 
-  # Public: Calls the given handler when commandName is triggered on the {View}.
+  # Public: Register a command handler on this element.
   #
-  # This is enhanced version of jQuery's `::on` method. It listens for a custom
-  # DOM event and adds metadata to the DOM to maintain a list of all commands.
+  # This method registers a command listener for this element on the Atom
+  # command registry
   #
   # * `commandName` A namespaced {String} describing the command, such as
   #   `find-and-replace:toggle`.
-  # * `selector` An optional selector {String} to filter the descendants of the
-  #   elements that trigger the event.
-  # * `options` An optional options {Object} with an `data` key.
   # * `handler` A {Function} to execute when the command is triggered.
-  command: (commandName, selector, options, handler) ->
+  command: (commandName, handler) ->
     super(commandName, selector, options, handler)
 
   # Public: Preempt events registered with jQuery's `::on`.
@@ -415,38 +412,10 @@ $.fn.trueHeight = ->
 $.fn.trueWidth = ->
   @[0].getBoundingClientRect().width
 
-$.fn.document = (eventName, docString) ->
-  eventDescriptions = {}
-  eventDescriptions[eventName] = docString
-  @data('documentation', {}) unless @data('documentation')
-  _.extend(@data('documentation'), eventDescriptions)
-
-$.fn.events = ->
-  documentation = @data('documentation') ? {}
-  events = {}
-
-  for eventName of @handlers()
-    events[eventName] = documentation[eventName] ? null
-
-  if @hasParent()
-    _.extend(@parent().events(), events)
-  else
-    events
-
-$.fn.command = (eventName, selector, options, handler) ->
-  if not options?
-    handler  = selector
-    selector = null
-  else if not handler?
-    handler = options
-    options = null
-
-  if selector? and typeof(selector) is 'object'
-    options  = selector
-    selector = null
-
-  @document(eventName, _.humanizeEventName(eventName, options?['doc']))
-  @on(eventName, selector, options?['data'], handler)
+$.fn.command = (eventName, handler) ->
+  if @length > 0
+    atom.commands.add @[0], eventName, (event) =>
+      handler.call(this, $.event.fix(event))
 
 $.fn.iconSize = (size) ->
   @width(size).height(size).css('font-size', size)
