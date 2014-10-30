@@ -128,7 +128,7 @@ describe "View", ->
         expect(-> new BadView).toThrow("Self-closing tag img cannot have text or content")
 
     describe "when a view is attached/detached to/from the DOM", ->
-      it "calls ::attached hooks if present", ->
+      it "calls ::attached and ::detached hooks if present", ->
         content = $('#jasmine-content')
         view.attached = jasmine.createSpy('attached hook')
         view.detached = jasmine.createSpy('detached hook')
