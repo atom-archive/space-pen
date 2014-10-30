@@ -127,16 +127,17 @@ describe "View", ->
 
         expect(-> new BadView).toThrow("Self-closing tag img cannot have text or content")
 
-    describe "when a view is attached/detached to/from the DOM", ->
-      it "calls ::attached and ::detached hooks if present", ->
-        content = $('#jasmine-content')
-        view.attached = jasmine.createSpy('attached hook')
-        view.detached = jasmine.createSpy('detached hook')
-        content.append(view)
-        expect(view.attached).toHaveBeenCalled()
+    if document.registerElement?
+      describe "when a view is attached/detached to/from the DOM", ->
+        it "calls ::attached and ::detached hooks if present", ->
+          content = $('#jasmine-content')
+          view.attached = jasmine.createSpy('attached hook')
+          view.detached = jasmine.createSpy('detached hook')
+          content.append(view)
+          expect(view.attached).toHaveBeenCalled()
 
-        view.detach()
-        expect(view.detached).toHaveBeenCalled()
+          view.detach()
+          expect(view.detached).toHaveBeenCalled()
 
     describe "when the view constructs a new jQuery wrapper", ->
       it "constructs instances of jQuery rather than the view class", ->

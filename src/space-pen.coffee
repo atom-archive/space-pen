@@ -43,7 +43,7 @@ window.__spacePenCustomElements = {}
 registerElement = (tagName) ->
   customTagName = "space-pen-#{tagName}"
   window.__spacePenCustomElements[customTagName] ?=
-    document.registerElement(customTagName, prototype: CustomElementPrototype, extends: tagName)
+    document.registerElement?(customTagName, prototype: CustomElementPrototype, extends: tagName)
   customTagName
 
 # Public: View class that extends the jQuery prototype.
