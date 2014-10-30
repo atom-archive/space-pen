@@ -93,11 +93,17 @@ describe "View", ->
         expect(view.li2Keypressed).toHaveBeenCalled()
         expect(view.li1Clicked).not.toHaveBeenCalled()
 
-      it "makes the view object accessible via the calling 'view' method on any child element", ->
+      it "makes the view object accessible via the ::view method on any child element", ->
         expect(view.view()).toBe view
         expect(view.header.view()).toBe view
         expect(view.subview.view()).toBe view.subview
         expect(view.subview.header.view()).toBe view.subview
+
+      it "makes the view object accessible via the ::containingView method on child elements added after the fact", ->
+        child = $('<div>')
+        view.append(child)
+        expect(child.view()).toBeUndefined()
+        expect(child.containingView()).toBe view
 
       it "throws an exception if the view has more than one root element", ->
         class BadView extends View
