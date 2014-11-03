@@ -201,7 +201,7 @@ class View extends jQuery
   #   `find-and-replace:toggle`.
   # * `handler` A {Function} to execute when the command is triggered.
   command: (commandName, handler) ->
-    super(commandName, selector, options, handler)
+    super(commandName, handler)
 
   # Public: Preempt events registered with jQuery's `::on`.
   #
