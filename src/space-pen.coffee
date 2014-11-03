@@ -287,7 +287,7 @@ class Builder
 # jQuery extensions
 
 $.fn.view = ->
-  @[0].spacePenView
+  @[0]?.spacePenView
 
 $.fn.views = -> @toArray().map (elt) ->
   $elt = $(elt)
