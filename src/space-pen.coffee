@@ -133,13 +133,6 @@ class View extends jQuery
       jQuery.fn.init.call(this, html)
       throw new Error("View markup must have a single root element") if @length != 1
       @element = @[0]
-      useCustomElementAttachHooks = true
-
-    if @useLegacyAttachHooks
-      @element.setAttribute('callAttachHooks', true)
-      @afterAttach = (onDOM) -> @attached() if onDOM
-      @beforeRemove = -> @detached()
-    else if useCustomElementAttachHooks
       @element.attached = => @attached?()
       @element.detached = => @detached?()
 
