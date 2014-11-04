@@ -39,7 +39,7 @@ CustomElementPrototype.detachedCallback = -> @detached?()
 # Register globally so multiple versions of SpacePen still share the same set
 # of custom elements. This prevents element re-definition. If the simple element
 # API needs to change in the future we'll need a different naming scheme anyway.
-window.__spacePenCustomElements = {}
+window.__spacePenCustomElements ?= {}
 registerElement = (tagName) ->
   customTagName = "space-pen-#{tagName}"
   window.__spacePenCustomElements[customTagName] ?=
@@ -133,9 +133,8 @@ class View extends jQuery
       jQuery.fn.init.call(this, html)
       throw new Error("View markup must have a single root element") if @length != 1
       @element = @[0]
-
-    @element.attached = => @attached?()
-    @element.detached = => @detached?()
+      @element.attached = => @attached?()
+      @element.detached = => @detached?()
 
     @wireOutlets(this)
     @bindEventHandlers(this)
