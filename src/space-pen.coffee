@@ -137,8 +137,8 @@ class View extends jQuery
 
     if @useLegacyAttachHooks
       @element.setAttribute('callAttachHooks', true)
-      @afterAttach = (onDOM) -> @attached?() if onDOM
-      @beforeRemove = -> @detached?()
+      @afterAttach = (onDOM) -> @attached() if onDOM
+      @beforeRemove = -> @detached()
     else if useCustomElementAttachHooks
       @element.attached = => @attached?()
       @element.detached = => @detached?()
