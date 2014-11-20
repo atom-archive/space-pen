@@ -286,6 +286,7 @@ callRemoveHooks = (element) ->
   element = element[0] if element instanceof jQuery
   return unless element?
   view.beforeRemove?() for view in viewsForElement(element)
+  originalCleanData([element].concat(element.getElementsByTagName('*')))
 
 viewsForElement = (element, includeDescendants=true) ->
   views = []
