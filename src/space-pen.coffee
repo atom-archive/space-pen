@@ -426,6 +426,19 @@ $.Event.prototype.abortKeyBinding = ->
 $.Event.prototype.currentTargetView = -> $(@currentTarget).containingView()
 $.Event.prototype.targetView = -> $(@target).containingView()
 
+$.fn.setTooltip = ->
+  throw new Error """
+    setTooltip is no longer available. Please use `atom.tooltips.add` instead.
+    See the docs at https://atom.io/docs/api/latest/TooltipManager#instance-add
+  """
+
+$.fn.destroyTooltip = $.fn.hideTooltip = ->
+  throw new Error """
+    destroyTooltip is no longer available. Please dispose the object returned
+    from  `atom.tooltips.add` instead.
+    See the docs at https://atom.io/docs/api/latest/TooltipManager#instance-add
+  """
+
 # Exports
 
 exports = exports ? this
