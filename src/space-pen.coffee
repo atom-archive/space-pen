@@ -440,7 +440,7 @@ View::command = ->
     `command` is no longer available. Please subscribe to commands via
     `atom.commands.add`. See the docs at
     https://atom.io/docs/api/latest/CommandRegistry#instance-add
-    Collect the results in a CompositeDisposable https://atom.io/docs/api/v0.150.0/CompositeDisposable
+    Collect the results in a CompositeDisposable https://atom.io/docs/api/latest/CompositeDisposable
   """
 
 JQueryTrigger = $.fn.trigger
