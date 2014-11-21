@@ -426,6 +426,21 @@ $.Event.prototype.abortKeyBinding = ->
 $.Event.prototype.currentTargetView = -> $(@currentTarget).containingView()
 $.Event.prototype.targetView = -> $(@target).containingView()
 
+# Deprecations
+
+JQueryTrigger = $.fn.trigger
+$.fn.trigger = (eventName, data) ->
+  if typeof eventName is 'string' and eventName.indexOf(':') > -1
+    throw new Error """
+      `trigger` is no longer available for emitting events as it will not
+      correctly route the command to its handlers. Please use
+      `atom.commands.dispatch` instead. See the docs at
+      https://atom.io/docs/api/latest/CommandRegistry#instance-dispatch
+      for details.
+    """
+  else
+    JQueryTrigger.call(this, eventName, data)
+
 $.fn.setTooltip = ->
   throw new Error """
     setTooltip is no longer available. Please use `atom.tooltips.add` instead.
