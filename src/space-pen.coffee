@@ -428,6 +428,21 @@ $.Event.prototype.targetView = -> $(@target).containingView()
 
 # Deprecations
 
+View::subscribe = ->
+  throw new Error """
+    `subscribe` is no longer available. Please use native the `addEventListener`,
+    jQuery's `on` or subscribe to commands via `atom.commands.add`. See the
+    docs at https://atom.io/docs/api/latest/CommandRegistry#instance-add.
+  """
+
+View::command = ->
+  throw new Error """
+    `command` is no longer available. Please subscribe to commands via
+    `atom.commands.add`. See the docs at
+    https://atom.io/docs/api/latest/CommandRegistry#instance-add
+    Collect the results in a CompositeDisposable https://atom.io/docs/api/v0.150.0/CompositeDisposable
+  """
+
 JQueryTrigger = $.fn.trigger
 $.fn.trigger = (eventName, data) ->
   if typeof eventName is 'string' and eventName.indexOf(':') > -1
