@@ -32,6 +32,20 @@ matchesSelector = if matches then ((elem, selector) -> matches.call(elem[0], sel
 
 idCounter = 0
 
+CustomElementPrototype = Object.create(HTMLElement::)
+CustomElementPrototype.attachedCallback = -> @attached?()
+CustomElementPrototype.detachedCallback = -> @detached?()
+
+# Register globally so multiple versions of SpacePen still share the same set
+# of custom elements. This prevents element re-definition. If the simple element
+# API needs to change in the future we'll need a different naming scheme anyway.
+window.__spacePenCustomElements ?= {}
+registerElement = (tagName) ->
+  customTagName = "space-pen-#{tagName}"
+  window.__spacePenCustomElements[customTagName] ?=
+    document.registerElement?(customTagName, prototype: CustomElementPrototype, extends: tagName)
+  customTagName
+
 # Public: View class that extends the jQuery prototype.
 #
 # Extending classes must implement a `@content` method.
@@ -119,16 +133,16 @@ class View extends jQuery
       jQuery.fn.init.call(this, html)
       throw new Error("View markup must have a single root element") if @length != 1
       @element = @[0]
+      @element.attached = => @attached?()
+      @element.detached = => @detached?()
 
     @wireOutlets(this)
     @bindEventHandlers(this)
-    @element.setAttribute('callAttachHooks', true)
 
     @element.spacePenView = this
     treeWalker = document.createTreeWalker(@element, NodeFilter.SHOW_ELEMENT)
     while element = treeWalker.nextNode()
       element.spacePenView = this
-
 
     if postProcessingSteps?
       step(this) for step in postProcessingSteps
@@ -177,19 +191,16 @@ class View extends jQuery
   end: ->
     @prevObject ? jQuery(null)
 
-  # Public: Calls the given handler when commandName is triggered on the {View}.
+  # Public: Register a command handler on this element.
   #
-  # This is enhanced version of jQuery's `::on` method. It listens for a custom
-  # DOM event and adds metadata to the DOM to maintain a list of all commands.
+  # This method registers a command listener for this element on the Atom
+  # command registry
   #
   # * `commandName` A namespaced {String} describing the command, such as
   #   `find-and-replace:toggle`.
-  # * `selector` An optional selector {String} to filter the descendants of the
-  #   elements that trigger the event.
-  # * `options` An optional options {Object} with an `data` key.
   # * `handler` A {Function} to execute when the command is triggered.
-  command: (commandName, selector, options, handler) ->
-    super(commandName, selector, options, handler)
+  command: (commandName, handler) ->
+    super(commandName, handler)
 
   # Public: Preempt events registered with jQuery's `::on`.
   #
@@ -220,6 +231,10 @@ class Builder
       @closeTag(name)
 
   openTag: (name, attributes) ->
+    if @document.length is 0
+      attributes ?= {}
+      attributes.is ?= registerElement(name)
+
     attributePairs =
       for attributeName, value of attributes
         "#{attributeName}=\"#{value}\""
@@ -267,64 +282,6 @@ class Builder
         else
           options.attributes = arg
     options
-
-callAttachHooks = (element) ->
-  element = element[0] if element instanceof jQuery
-  return unless element instanceof HTMLElement
-
-  onDom = false
-  ancestor = element.parentElement
-  while ancestor
-    if ancestor.tagName is 'HTML'
-      onDom = true
-      break
-    ancestor = ancestor.parentElement
-
-  view.afterAttach?(onDom) for view in viewsForElement(element, onDom)
-
-callRemoveHooks = (element) ->
-  element = element[0] if element instanceof jQuery
-  return unless element?
-  view.beforeRemove?() for view in viewsForElement(element)
-  originalCleanData([element].concat(element.getElementsByTagName('*')))
-
-viewsForElement = (element, includeDescendants=true) ->
-  views = []
-
-  if element.getAttribute('callAttachHooks')
-    if view = $(element).view()
-      views.push(view)
-
-  if includeDescendants
-    for descendantElement in element.querySelectorAll('[callAttachHooks]')
-      if view = $(descendantElement).view()
-        views.push(view)
-
-  views
-
-for methodName in ['append', 'prepend', 'after', 'before']
-  do (methodName) ->
-    originalMethod = $.fn[methodName]
-    jQuery.fn[methodName] = (args...) ->
-      flatArgs = [].concat args...
-      result = originalMethod.apply(this, flatArgs)
-      callAttachHooks arg for arg in flatArgs
-      result
-
-for methodName in ['prependTo', 'appendTo', 'insertAfter', 'insertBefore']
-  do (methodName) ->
-    originalMethod = jQuery.fn[methodName]
-    jQuery.fn[methodName] = (args...) ->
-      result = originalMethod.apply(this, args)
-      callAttachHooks(this)
-      result
-
-originalCleanData = jQuery.cleanData
-jQuery.cleanData = (elements) ->
-  for element in elements
-    view = $(element).view()
-    view.beforeRemove?() if view and view?[0] == element
-  originalCleanData(elements)
 
 # jQuery extensions
 
@@ -454,38 +411,10 @@ $.fn.trueHeight = ->
 $.fn.trueWidth = ->
   @[0].getBoundingClientRect().width
 
-$.fn.document = (eventName, docString) ->
-  eventDescriptions = {}
-  eventDescriptions[eventName] = docString
-  @data('documentation', {}) unless @data('documentation')
-  _.extend(@data('documentation'), eventDescriptions)
-
-$.fn.events = ->
-  documentation = @data('documentation') ? {}
-  events = {}
-
-  for eventName of @handlers()
-    events[eventName] = documentation[eventName] ? null
-
-  if @hasParent()
-    _.extend(@parent().events(), events)
-  else
-    events
-
-$.fn.command = (eventName, selector, options, handler) ->
-  if not options?
-    handler  = selector
-    selector = null
-  else if not handler?
-    handler = options
-    options = null
-
-  if selector? and typeof(selector) is 'object'
-    options  = selector
-    selector = null
-
-  @document(eventName, _.humanizeEventName(eventName, options?['doc']))
-  @on(eventName, selector, options?['data'], handler)
+$.fn.command = (eventName, handler) ->
+  if @length > 0
+    atom.commands.add @[0], eventName, (event) =>
+      handler.call(this, $.event.fix(event))
 
 $.fn.iconSize = (size) ->
   @width(size).height(size).css('font-size', size)
@@ -505,6 +434,3 @@ exports.jQuery = jQuery
 exports.$ = $
 exports.$$ = (fn) -> View.render.call(View, fn)
 exports.$$$ = (fn) -> View.buildHtml.call(View, fn)[0]
-exports.callAttachHooks = callAttachHooks
-exports.callRemoveHooks = callRemoveHooks
-exports.viewsForElement = viewsForElement

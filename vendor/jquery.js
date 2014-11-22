@@ -4324,7 +4324,8 @@ jQuery.event = {
 
 	global: {},
 
-	add: function( elem, types, handler, data, selector, addEventListener ) {
+	add: function( elem, types, handler, data, selector ) {
+
 		var handleObjIn, eventHandle, tmp,
 			events, t, handleObj,
 			special, handlers, type, namespaces, origType,
@@ -4404,9 +4405,7 @@ jQuery.event = {
 
 				// Only use addEventListener if the special events handler returns false
 				if ( !special.setup || special.setup.call( elem, data, namespaces, eventHandle ) === false ) {
-					if ( addEventListener ) { // Added to support compatibility with atom command registry
-						addEventListener( elem, type, eventHandle );
-					} else if ( elem.addEventListener ) {
+					if ( elem.addEventListener ) {
 						elem.addEventListener( type, eventHandle, false );
 					}
 				}
@@ -4436,7 +4435,7 @@ jQuery.event = {
 	},
 
 	// Detach an event or set of events from an element
-	remove: function( elem, types, handler, selector, mappedTypes, removeEventListener ) {
+	remove: function( elem, types, handler, selector, mappedTypes ) {
 
 		var j, origCount, tmp,
 			events, t, handleObj,
@@ -4492,11 +4491,7 @@ jQuery.event = {
 			// (avoids potential for endless recursion during removal of special event handlers)
 			if ( origCount && !handlers.length ) {
 				if ( !special.teardown || special.teardown.call( elem, namespaces, elemData.handle ) === false ) {
-					if ( removeEventListener ) { // Added to support compatibility with atom command registry
-						removeEventListener( elem, type, elemData.handle );
-					} else {
-						jQuery.removeEvent( elem, type, elemData.handle );
-					}
+					jQuery.removeEvent( elem, type, elemData.handle );
 				}
 
 				delete events[ type ];

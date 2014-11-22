@@ -7,6 +7,16 @@ CoffeeScript. It combines the "view" and "controller" into a single jQuery
 object, whose markup is expressed with an embedded DSL similar to Markaby for
 Ruby.
 
+## Changes In Version 4
+
+This version of SpacePen depends on HTML 5 custom elements to support lifecycle
+hooks that previously depended on all DOM manipulation being performed via
+jQuery. The `afterAttach` and `beforeRemove` hooks have been replaced with
+`attached` and `detached` and their semantics have been altered.
+
+If you need to use SpacePen in an environment that doesn't support custom
+elements, consider using the previous major version or switching frameworks.
+
 ## Basics
 
 View objects extend from the View class and have a @content class method where
@@ -198,70 +208,31 @@ $('body').append(view)
 $('li').view() == view
 ```
 
-### After Attach Hooks
+### Attached/Detached Hooks
 The `initialize` method is always called when the view is still a detached DOM
 fragment, before it is appended to the DOM. This is usually okay, but
 occasionally you'll have some initialization logic that depends on the view
 actually being on the DOM. For example, you may depend on applying a CSS rule
 before measuring an element's height.
 
-SpacePen extends jQuery manipulation methods like `append`, `replaceWith`, etc.
-to call `afterAttach` hooks on your view objects when they are appended to other
-elements. The hook will be called with a boolean value indicating whether the
-view is attached to the main DOM or just to another DOM fragment. If
-`afterAttach` is called with `true`, you can assume your object is attached to
-the page.
+For these situations, use the `attached` hook. It will be called whenever your
+element is actually attached to the DOM. Past versions of SpacePen would also
+call this hook when your element was attached to another detached node, but that
+behavior is no longer supported.
+
+To be notified when your element is detached from the DOM, implement the
+`detached` hook.
 
 ```coffeescript
 class Spacecraft extends View
   @content: -> ...
 
-  afterAttach: (onDom) ->
-    if onDom
-      console.log "With CSS applied, my height is", @height()
-    else
-      console.log "I just attached to", @parent()
+  attached: ->
+    console.log "With CSS applied, my height is", @height()
+
+  detached: ->
+    console.log "I have been detached."
 ```
-
-### Before Remove Hooks
-SpacePen calls the `beforeRemove` hook whenever a view is removed from the DOM
-via a jQuery method. This works if the view is removed directly with `remove` or
-indirectly when a method like `empty` or `html` is called on a parent element.
-This is a good place to clean up subscriptions and other view-specific state.
-
-```coffeescript
-class Spacecraft extends View
-  @content: -> ...
-
-  initialize: ->
-    $(window).on 'resize.spacecraft', -> ...
-
-  beforeRemove: ->
-    $(window).off('.spacecraft')
-```
-
-## Anticipated Concerns / Objections
-
-### What about the view/controller distinction?
-MVC was invented in a setting where graphics rendering was substantially more
-complex than it is in a web browser. In Cocoa development, for example, a view
-object's primary role is to implement `drawRect` and forward UI events to the
-controller. But in a browser, you don't need to handle your own rendering with
-`drawRect`. Instead, you express the view declaratively using markup and CSS,
-and the browser takes care of the rest. The closest thing to a MVC "view" in
-this world is a fragment of markup, but this contains very little logic. On the
-web, the view/controller distinction is like a vestigial organ: It's a solution
-to a problem we no longer have, and no longer justifies the conceptual overhead
-of using two objects where one would do.
-
-### Our designers can't handle writing markup in CoffeeScript
-Okay. SpacePen might not be the right fit for you. But are you sure they can't
-handle it? What if you pair with them for a couple hours and teach them what to
-do? There's also the potential of plugging in another template language for
-content generation, while keeping the rest of the framework. But if developers
-are writing the majority of the markup, expressing it directly in CoffeeScript
-is a productivity win.
-
 
 ## Hacking on SpacePen
 
