@@ -413,11 +413,33 @@ $.Event.prototype.targetView = -> $(@target).containingView()
 # Deprecations
 
 View::subscribe = ->
-  throw new Error """
-    `subscribe` is no longer available. Please use native the `addEventListener`,
-    jQuery's `on` or subscribe to commands via `atom.commands.add`. See the
-    docs at https://atom.io/docs/api/latest/CommandRegistry#instance-add.
-  """
+  message = "The `::subscribe` method is no longer available on SpacePen views.\n\n"
+
+  if arguments.length is 1
+    message += """
+      To store multiple subscription objects for later disposal, add them to a
+      `CompositeDisposable` instance (https://atom.io/docs/api/v0.150.0/CompositeDisposable)
+      and call `.dispose()` on it explicitly in this view's `::detached` hook.
+    """
+  else
+    if arguments[0]?.jquery
+      message += """
+        To subscribe to events on a jQuery object, use the traditional `::on` and
+        `::off methods`.
+      """
+    else
+      message += """
+        To subscribe to events on an Atom object, use an explicit event-subscription
+        method (starting with ::onDid* or ::onWill*).
+
+        To collect multiple subscription objects for later disposal, add them to a
+        `CompositeDisposable` instance:
+        https://atom.io/docs/api/v0.150.0/CompositeDisposable
+
+        Call `.dispose()` on your `CompositeDisposable` in this view's `::detached` hook.
+      """
+
+  throw new Error(message)
 
 $.fn.command = (eventName, handler) ->
   throw new Error """
