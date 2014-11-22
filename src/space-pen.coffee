@@ -441,12 +441,30 @@ View::subscribe = ->
 
   throw new Error(message)
 
+View::subscribeToCommand = ->
+  throw new Error """
+    The `::subscribeToCommand` method is no longer available on SpacePen views."
+
+    Please subscribe to commands via `atom.commands.add`:
+    https://atom.io/docs/api/latest/CommandRegistry#instance-add
+
+    Collect the returned subscription objects in a CompositeDisposable:
+    https://atom.io/docs/api/latest/CompositeDisposable
+
+    Call `.dispose()` on your `CompositeDisposable` in this view's `::detached` hook.
+  """
+
 $.fn.command = (eventName, handler) ->
   throw new Error """
-    `command` is no longer available. Please subscribe to commands via
-    `atom.commands.add`. See the docs at
+    The `::command` method is no longer available on SpacePen views."
+
+    Please subscribe to commands via `atom.commands.add`:
     https://atom.io/docs/api/latest/CommandRegistry#instance-add
-    Collect the results in a CompositeDisposable https://atom.io/docs/api/latest/CompositeDisposable
+
+    Collect the returned subscription objects in a CompositeDisposable:
+    https://atom.io/docs/api/latest/CompositeDisposable
+
+    Call `.dispose()` on your `CompositeDisposable` in this view's `::detached` hook.
   """
 
 JQueryTrigger = $.fn.trigger
