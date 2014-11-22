@@ -445,7 +445,7 @@ View::command = ->
 
 JQueryTrigger = $.fn.trigger
 $.fn.trigger = (eventName, data) ->
-  if typeof eventName is 'string' and atom.commands.registeredCommands[eventName]
+  if typeof eventName is 'string' and atom?.commands.registeredCommands[eventName]?
     throw new Error """
       `trigger` is no longer available for emitting events as it will not
       correctly route the command to its handlers. Please use
