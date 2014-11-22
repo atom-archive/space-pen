@@ -191,17 +191,6 @@ class View extends jQuery
   end: ->
     @prevObject ? jQuery(null)
 
-  # Public: Register a command handler on this element.
-  #
-  # This method registers a command listener for this element on the Atom
-  # command registry
-  #
-  # * `commandName` A namespaced {String} describing the command, such as
-  #   `find-and-replace:toggle`.
-  # * `handler` A {Function} to execute when the command is triggered.
-  command: (commandName, handler) ->
-    super(commandName, handler)
-
   # Public: Preempt events registered with jQuery's `::on`.
   #
   # * `eventName` A event name {String}.
@@ -411,11 +400,6 @@ $.fn.trueHeight = ->
 $.fn.trueWidth = ->
   @[0].getBoundingClientRect().width
 
-$.fn.command = (eventName, handler) ->
-  if @length > 0
-    atom.commands.add @[0], eventName, (event) =>
-      handler.call(this, $.event.fix(event))
-
 $.fn.iconSize = (size) ->
   @width(size).height(size).css('font-size', size)
 
@@ -435,7 +419,7 @@ View::subscribe = ->
     docs at https://atom.io/docs/api/latest/CommandRegistry#instance-add.
   """
 
-View::command = ->
+$.fn.command = (eventName, handler) ->
   throw new Error """
     `command` is no longer available. Please subscribe to commands via
     `atom.commands.add`. See the docs at
