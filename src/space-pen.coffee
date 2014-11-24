@@ -1,6 +1,7 @@
 if typeof require is 'function'
   _ = require 'underscore-plus'
   $ = jQuery = require '../vendor/jquery'
+  Grim = require 'grim'
 else
   {_, jQuery} = window
   $ = jQuery
@@ -467,14 +468,27 @@ $.fn.command = (eventName, handler) ->
     Call `.dispose()` on your `CompositeDisposable` in this view's `::detached` hook.
   """
 
+
+JQueryEventAdd = jQuery.event.add
+jQuery.event.add = (elem, types, handler, data, selector) ->
+  if /\:/.test(types)
+    Grim?.deprecate """
+      Are you trying to listen for an Atom command with `jQuery::trigger`?
+      `jQuery::trigger` can no longer be used to listen for Atom commands. Please
+      use `atom.commands.add` instead. See the docs at
+      https://atom.io/docs/api/latest/CommandRegistry#instance-add for details.
+    """
+  JQueryEventAdd.call(this, elem, types, handler, data, selector)
+
+
 JQueryTrigger = $.fn.trigger
 $.fn.trigger = (eventName, data) ->
-  if typeof eventName is 'string' and atom?.commands.registeredCommands[eventName]?
-    throw new Error """
-      `trigger` is no longer available for emitting events as it will not
-      correctly route the command to its handlers. Please use
-      `atom.commands.dispatch` instead. See the docs at
-      https://atom.io/docs/api/latest/CommandRegistry#instance-dispatch
+  if typeof eventName is 'string' and /\:/.test(eventName)
+    Grim?.deprecate """
+      Are you trying to dispatch an Atom command with `jQuery::trigger`?
+      `jQuery::trigger` can no longer emit Atom commands as it will not correctly route
+      the command to its handlers. Please use `atom.commands.dispatch` instead.
+      See the docs at https://atom.io/docs/api/latest/CommandRegistry#instance-dispatch
       for details.
     """
   else
