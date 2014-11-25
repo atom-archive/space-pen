@@ -1,6 +1,7 @@
 if typeof require is 'function'
   _ = require 'underscore-plus'
   $ = jQuery = require '../vendor/jquery'
+  Grim = require 'grim'
 else
   {_, jQuery} = window
   $ = jQuery
@@ -43,7 +44,7 @@ window.__spacePenCustomElements ?= {}
 registerElement = (tagName) ->
   customTagName = "space-pen-#{tagName}"
   window.__spacePenCustomElements[customTagName] ?=
-    document.registerElement?(customTagName, prototype: CustomElementPrototype, extends: tagName)
+    document.registerElement?(customTagName, prototype: Object.create(CustomElementPrototype), extends: tagName)
   customTagName
 
 # Public: View class that extends the jQuery prototype.
@@ -190,17 +191,6 @@ class View extends jQuery
 
   end: ->
     @prevObject ? jQuery(null)
-
-  # Public: Register a command handler on this element.
-  #
-  # This method registers a command listener for this element on the Atom
-  # command registry
-  #
-  # * `commandName` A namespaced {String} describing the command, such as
-  #   `find-and-replace:toggle`.
-  # * `handler` A {Function} to execute when the command is triggered.
-  command: (commandName, handler) ->
-    super(commandName, handler)
 
   # Public: Preempt events registered with jQuery's `::on`.
   #
@@ -411,11 +401,6 @@ $.fn.trueHeight = ->
 $.fn.trueWidth = ->
   @[0].getBoundingClientRect().width
 
-$.fn.command = (eventName, handler) ->
-  if @length > 0
-    atom.commands.add @[0], eventName, (event) =>
-      handler.call(this, $.event.fix(event))
-
 $.fn.iconSize = (size) ->
   @width(size).height(size).css('font-size', size)
 
@@ -425,6 +410,102 @@ $.fn.intValue = ->
 $.Event.prototype.abortKeyBinding = ->
 $.Event.prototype.currentTargetView = -> $(@currentTarget).containingView()
 $.Event.prototype.targetView = -> $(@target).containingView()
+
+# Deprecations
+
+View::subscribe = ->
+  message = "The `::subscribe` method is no longer available on SpacePen views.\n\n"
+
+  if arguments.length is 1
+    message += """
+      To store multiple subscription objects for later disposal, add them to a
+      `CompositeDisposable` instance (https://atom.io/docs/api/v0.150.0/CompositeDisposable)
+      and call `.dispose()` on it explicitly in this view's `::detached` hook.
+    """
+  else
+    if arguments[0]?.jquery
+      message += """
+        To subscribe to events on a jQuery object, use the traditional `::on` and
+        `::off methods`.
+      """
+    else
+      message += """
+        To subscribe to events on an Atom object, use an explicit event-subscription
+        method (starting with ::onDid* or ::onWill*).
+
+        To collect multiple subscription objects for later disposal, add them to a
+        `CompositeDisposable` instance:
+        https://atom.io/docs/api/v0.150.0/CompositeDisposable
+
+        Call `.dispose()` on your `CompositeDisposable` in this view's `::detached` hook.
+      """
+
+  throw new Error(message)
+
+View::subscribeToCommand = ->
+  throw new Error """
+    The `::subscribeToCommand` method is no longer available on SpacePen views."
+
+    Please subscribe to commands via `atom.commands.add`:
+    https://atom.io/docs/api/latest/CommandRegistry#instance-add
+
+    Collect the returned subscription objects in a CompositeDisposable:
+    https://atom.io/docs/api/latest/CompositeDisposable
+
+    Call `.dispose()` on your `CompositeDisposable` in this view's `::detached` hook.
+  """
+
+$.fn.command = (eventName, handler) ->
+  throw new Error """
+    The `::command` method is no longer available on SpacePen views."
+
+    Please subscribe to commands via `atom.commands.add`:
+    https://atom.io/docs/api/latest/CommandRegistry#instance-add
+
+    Collect the returned subscription objects in a CompositeDisposable:
+    https://atom.io/docs/api/latest/CompositeDisposable
+
+    Call `.dispose()` on your `CompositeDisposable` in this view's `::detached` hook.
+  """
+
+
+JQueryEventAdd = jQuery.event.add
+jQuery.event.add = (elem, types, handler, data, selector) ->
+  if /\:/.test(types)
+    Grim?.deprecate """
+      Are you trying to listen for an Atom command with `jQuery::on`?
+      `jQuery::trigger` can no longer be used to listen for Atom commands. Please
+      use `atom.commands.add` instead. See the docs at
+      https://atom.io/docs/api/latest/CommandRegistry#instance-add for details.
+    """
+  JQueryEventAdd.call(this, elem, types, handler, data, selector)
+
+
+JQueryTrigger = $.fn.trigger
+$.fn.trigger = (eventName, data) ->
+  if typeof eventName is 'string' and /\:/.test(eventName)
+    Grim?.deprecate """
+      Are you trying to dispatch an Atom command with `jQuery::trigger`?
+      `jQuery::trigger` can no longer emit Atom commands as it will not correctly route
+      the command to its handlers. Please use `atom.commands.dispatch` instead.
+      See the docs at https://atom.io/docs/api/latest/CommandRegistry#instance-dispatch
+      for details.
+    """
+  else
+    JQueryTrigger.call(this, eventName, data)
+
+$.fn.setTooltip = ->
+  throw new Error """
+    setTooltip is no longer available. Please use `atom.tooltips.add` instead.
+    See the docs at https://atom.io/docs/api/latest/TooltipManager#instance-add
+  """
+
+$.fn.destroyTooltip = $.fn.hideTooltip = ->
+  throw new Error """
+    destroyTooltip is no longer available. Please dispose the object returned
+    from  `atom.tooltips.add` instead.
+    See the docs at https://atom.io/docs/api/latest/TooltipManager#instance-add
+  """
 
 # Exports
 
