@@ -473,7 +473,7 @@ JQueryEventAdd = jQuery.event.add
 jQuery.event.add = (elem, types, handler, data, selector) ->
   if /\:/.test(types)
     Grim?.deprecate """
-      Are you trying to listen for an Atom command with `jQuery::on`?
+      Are you trying to listen for the '#{types}' Atom command with `jQuery::on`?
       `jQuery::trigger` can no longer be used to listen for Atom commands. Please
       use `atom.commands.add` instead. See the docs at
       https://atom.io/docs/api/latest/CommandRegistry#instance-add for details.
@@ -483,9 +483,9 @@ jQuery.event.add = (elem, types, handler, data, selector) ->
 
 JQueryTrigger = $.fn.trigger
 $.fn.trigger = (eventName, data) ->
-  if typeof eventName is 'string' and /\:/.test(eventName)
+  if typeof eventName is 'string' and /\:/.test(eventName) and eventName not in ['cursor:moved', 'selection:changed', 'editor:display-updated']
     Grim?.deprecate """
-      Are you trying to dispatch an Atom command with `jQuery::trigger`?
+      Are you trying to dispatch the '#{eventName}' Atom command with `jQuery::trigger`?
       `jQuery::trigger` can no longer emit Atom commands as it will not correctly route
       the command to its handlers. Please use `atom.commands.dispatch` instead.
       See the docs at https://atom.io/docs/api/latest/CommandRegistry#instance-dispatch
