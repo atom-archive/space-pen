@@ -473,7 +473,7 @@ JQueryEventAdd = jQuery.event.add
 jQuery.event.add = (elem, types, handler, data, selector) ->
   if /\:/.test(types)
     Grim?.deprecate """
-      Are you trying to listen for an Atom command with `jQuery::trigger`?
+      Are you trying to listen for an Atom command with `jQuery::on`?
       `jQuery::trigger` can no longer be used to listen for Atom commands. Please
       use `atom.commands.add` instead. See the docs at
       https://atom.io/docs/api/latest/CommandRegistry#instance-add for details.
