@@ -481,7 +481,7 @@ jQuery.event.add = (elem, types, handler, data, selector) ->
   JQueryEventAdd.call(this, elem, types, handler, data, selector)
 
 
-JQueryTrigger = $.fn.trigger
+$.fn.originalTrigger = $.fn.trigger
 $.fn.trigger = (eventName, data) ->
   if typeof eventName is 'string' and /\:/.test(eventName) and eventName not in ['cursor:moved', 'selection:changed', 'editor:display-updated']
     Grim?.deprecate """
@@ -491,8 +491,7 @@ $.fn.trigger = (eventName, data) ->
       See the docs at https://atom.io/docs/api/latest/CommandRegistry#instance-dispatch
       for details.
     """
-  else
-    JQueryTrigger.call(this, eventName, data)
+  @originalTrigger(eventName, data)
 
 $.fn.setTooltip = ->
   throw new Error """
