@@ -36,7 +36,7 @@
     "grunt-atomdoc": "^1.0.0"
   },
   "dependencies": {
-    "grim": "^0.13.0",
+    "grim": "^1.0.0",
     "underscore-plus": "1.x"
   }
 }
