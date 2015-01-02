@@ -282,7 +282,11 @@ class Builder
 # jQuery extensions
 
 $.fn.view = ->
-  @[0]?.spacePenView
+  if element = @[0]
+    if element.__spacePenView?
+      viewConstructorName = element.__spacePenView.constructor.name
+      Grim?.deprecate("Accessing `#{viewConstructorName}` via `$::view()` is deprecated. Use the raw DOM node or underlying model object instead.")
+    element.spacePenView
 
 $.fn.views = -> @toArray().map (elt) ->
   $elt = $(elt)
