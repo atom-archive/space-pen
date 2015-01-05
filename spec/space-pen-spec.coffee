@@ -139,22 +139,6 @@ describe "View", ->
           view.detach()
           expect(view.detached).toHaveBeenCalled()
 
-    describe "when a view defines an ::afterAttach hook", ->
-      it "throws an exception on construction", ->
-        class BadView extends View
-          @content: -> @div "Bad"
-          afterAttach: ->
-
-        expect(-> new BadView).toThrow()
-
-    describe "when a view defines a ::beforeRemove hook", ->
-      it "throws an exception on construction", ->
-        class BadView extends View
-          @content: -> @div "Bad"
-          beforeRemove: ->
-
-        expect(-> new BadView).toThrow()
-
     describe "when the view constructs a new jQuery wrapper", ->
       it "constructs instances of jQuery rather than the view class", ->
         expect(view.eq(0) instanceof jQuery).toBeTruthy()
