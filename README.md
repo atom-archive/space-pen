@@ -1,6 +1,6 @@
 # SpacePen [![Build Status](https://travis-ci.org/atom/space-pen.svg?branch=master)](https://travis-ci.org/atom/space-pen)
 
-**Version 4.x of SpacePen is intended to be included as a direct dependency of 1.0-compatible Atom packages. If you're looking for SpacePen 3.x, used in [Atom Core](https://github.com/atom/atom), check out the [3.x branch](https://github.com/atom/space-pen/tree/3.x).**
+**Version 5.x of SpacePen is intended to be included as a direct dependency of 1.0-compatible Atom packages. If you're looking for SpacePen 3.x, used in [Atom Core](https://github.com/atom/atom), check out the [3.x branch](https://github.com/atom/space-pen/tree/3.x).**
 
 ## Write markup on the final frontier
 
