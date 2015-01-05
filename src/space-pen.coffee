@@ -127,6 +127,12 @@ class View extends jQuery
   element: null
 
   constructor: (args...) ->
+    if typeof @afterAttach is 'function'
+      throw new Error("The ::afterAttach hook has been replaced by ::attached. See https://github.com/atom/space-pen#attacheddetached-hooks for details.")
+
+    if typeof @beforeRemove is 'function'
+      throw new Error("The ::beforeRemove hook has been replaced by ::detached. See https://github.com/atom/space-pen#attacheddetached-hooks for details.")
+
     if @element?
       jQuery.fn.init.call(this, @element)
     else
