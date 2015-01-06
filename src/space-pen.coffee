@@ -283,7 +283,7 @@ class Builder
 
 $.fn.view = ->
   if element = @[0]
-    if element.__spacePenView?
+    if element.__spacePenView? and not element.__allowViewAccess
       viewConstructorName = element.__spacePenView.constructor.name
       Grim?.deprecate("Accessing `#{viewConstructorName}` via `$::view()` is deprecated. Use the raw DOM node or underlying model object instead.")
     element.spacePenView
