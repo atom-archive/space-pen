@@ -4,3 +4,4 @@ node_modules
 lib
 spec/spec-helper.js
 api.json
+npm-debug.log
