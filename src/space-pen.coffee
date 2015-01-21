@@ -491,17 +491,18 @@ jQuery.event.add = (elem, types, handler, data, selector) ->
   JQueryEventAdd.call(this, elem, types, handler, data, selector)
 
 
-$.fn.originalTrigger = $.fn.trigger
-$.fn.trigger = (eventName, data) ->
-  if typeof eventName is 'string' and /\:/.test(eventName) and eventName not in ['cursor:moved', 'selection:changed', 'editor:display-updated']
-    Grim?.deprecate """
-      Are you trying to dispatch the '#{eventName}' Atom command with `jQuery::trigger`?
-      `jQuery::trigger` can no longer emit Atom commands as it will not correctly route
-      the command to its handlers. Please use `atom.commands.dispatch` instead.
-      See the docs at https://atom.io/docs/api/latest/CommandRegistry#instance-dispatch
-      for details.
-    """
-  @originalTrigger(eventName, data)
+unless $.fn.originalTrigger?
+  $.fn.originalTrigger = $.fn.trigger
+  $.fn.trigger = (eventName, data) ->
+    if typeof eventName is 'string' and /\:/.test(eventName) and eventName not in ['cursor:moved', 'selection:changed', 'editor:display-updated']
+      Grim?.deprecate """
+        Are you trying to dispatch the '#{eventName}' Atom command with `jQuery::trigger`?
+        `jQuery::trigger` can no longer emit Atom commands as it will not correctly route
+        the command to its handlers. Please use `atom.commands.dispatch` instead.
+        See the docs at https://atom.io/docs/api/latest/CommandRegistry#instance-dispatch
+        for details.
+      """
+    @originalTrigger(eventName, data)
 
 $.fn.setTooltip = ->
   throw new Error """

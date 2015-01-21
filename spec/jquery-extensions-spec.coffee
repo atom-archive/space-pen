@@ -178,3 +178,6 @@ describe 'jQuery extensions', ->
     describe ".targetView()", ->
       it "returns the target's space pen view", ->
         expect(event.targetView()).toBe parentView.child.grandchild
+
+  it "exposes a non-deprecated $.fn.originalTrigger", ->
+    expect(typeof $(document.body).originalTrigger).toBe 'function'
